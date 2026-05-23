@@ -541,3 +541,23 @@ body { margin: 0; padding: 0; }
   font-size: 7.5pt;
   color: var(--text-soft);
 }
+
+/* Action Buttons */
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  color: var(--navy);
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.action-btn:hover {
+  background: #f0f0f0;
+  border-color: var(--navy);
+}

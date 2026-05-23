@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
-import { Plus, Trash2, Printer, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload } from 'lucide-react';
 import './App.css';
 
 function useStickyState(defaultValue, key) {
@@ -128,6 +128,39 @@ function App() {
     }
   };
 
+  const exportQuote = () => {
+    const data = { meta, client, project, items, totals };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const safeName = (project.name || client.name || 'Quote').replace(/[^a-zA-Z0-9 -]/g, '');
+    a.download = `${safeName}_Template.windal`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importQuote = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.meta) setMeta(data.meta);
+        if (data.client) setClient(data.client);
+        if (data.project) setProject(data.project);
+        if (data.items) setItems(data.items);
+        if (data.totals) setTotals(data.totals);
+      } catch (err) {
+        alert("Failed to parse the template file.");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  };
+
   return (
     <div className="quote-builder-layout">
       {/* LEFT SIDE: FORM (Hidden when printing) */}
@@ -135,6 +168,13 @@ function App() {
         <div className="form-header">
           <h2>Windal Quote Builder</h2>
           <div className="header-actions">
+            <button onClick={exportQuote} className="action-btn" title="Save as Template">
+              <Download size={16} /> Save
+            </button>
+            <label className="action-btn" title="Load Template">
+              <Upload size={16} /> Load
+              <input type="file" accept=".windal,.json" style={{ display: 'none' }} onChange={importQuote} />
+            </label>
             <button onClick={clearForm} className="clear-btn">Clear All</button>
             <button onClick={() => window.print()} className="print-btn">
               <Printer size={16} /> Print / PDF
