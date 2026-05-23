@@ -1,31 +1,44 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
 import { Plus, Trash2, Printer, ChevronDown, ChevronUp } from 'lucide-react';
 import './App.css';
 
+function useStickyState(defaultValue, key) {
+  const [value, setValue] = useState(() => {
+    const stickyValue = window.localStorage.getItem(key);
+    return stickyValue !== null
+      ? JSON.parse(stickyValue)
+      : defaultValue;
+  });
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+  return [value, setValue];
+}
+
 function App() {
-  const [meta, setMeta] = useState({
+  const [meta, setMeta] = useStickyState({
     quoteNo: 'WIN-QT-2026-001',
     date: '15 March 2026',
     validUntil: '30 March 2026',
     preparedBy: 'Samir Wadhwa'
-  });
+  }, 'windal-meta');
 
-  const [client, setClient] = useState({
+  const [client, setClient] = useStickyState({
     name: 'Ajay Verma',
     address: 'IIM Road',
     city: 'Lucknow, Uttar Pradesh — 226013',
     contact: '+91 98765 43210  ·  ajay@example.com'
-  });
+  }, 'windal-client');
 
-  const [project, setProject] = useState({
+  const [project, setProject] = useStickyState({
     name: 'Verma Residence',
     address: 'Plot 42, IIM Road',
     architect: 'Design Studio',
     refNo: 'DS-2026-11'
-  });
+  }, 'windal-project');
 
-  const [items, setItems] = useState([
+  const [items, setItems] = useStickyState([
     {
       id: 1,
       code: 'W-01',
@@ -42,13 +55,13 @@ function App() {
       rate: 2419,
       imageBlob: null
     }
-  ]);
+  ], 'windal-items');
 
-  const [totals, setTotals] = useState({
+  const [totals, setTotals] = useStickyState({
     discount: 0,
     logistics: 10000,
     installation: 12500
-  });
+  }, 'windal-totals');
 
   // State to manage collapsed items
   const [expandedItems, setExpandedItems] = useState({ 0: true });
