@@ -1,4 +1,5 @@
 import React from 'react';
+import QRCode from 'react-qr-code';
 import logo from './assets/brand_assets/LOGO - Windal.png';
 import award1 from './assets/awards/IIID_Best_Stall_Design_Award_2023.jpeg';
 import award2 from './assets/awards/IDEA_24_Trophy.jpeg';
@@ -199,12 +200,18 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
           <div className="qp-totals-section">
             <div className="qp-bank-block">
               <h4>Bank Details</h4>
-              <p>
-                Account Name &nbsp;&nbsp;&nbsp;<strong>Wadhwa Enterprises</strong><br />
-                Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Account Number]</strong><br />
-                Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Bank Name], [Branch]</strong><br />
-                IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[IFSC Code]</strong><br />
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>
+                  Account Name &nbsp;&nbsp;&nbsp;<strong>WADHWA ENTERPRISES</strong><br />
+                  Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>09410400008722</strong><br />
+                  Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Bank of Baroda, Sisamau, Kanpur</strong><br />
+                  IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>BARB0SISAMA</strong><br />
+                </p>
+                <div style={{ textAlign: 'center', background: 'white', padding: '4px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
+                  <QRCode value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={54} />
+                  <div style={{ fontSize: '5pt', marginTop: '2px', color: 'var(--navy)', fontWeight: '600' }}>SCAN TO PAY</div>
+                </div>
+              </div>
               <p style={{ marginTop: '2mm' }}>
                 <strong style={{ color: 'var(--gold)', fontSize: '8pt' }}>GSTIN &nbsp;</strong> 
                 <strong style={{ fontSize: '10pt' }}>09AABPW2030P1ZD</strong>
