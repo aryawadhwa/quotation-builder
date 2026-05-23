@@ -51,6 +51,8 @@ function App() {
       system: 'Aluminium Slim Sliding Window',
       type: '3 Track · 2 Glass + 1 SS Mesh · All Sliding',
       dimension: 'W 2743 mm × H 1676 mm',
+      width: 2743,
+      height: 1676,
       area: '49.48',
       location: 'Master Bedroom',
       glazing: '8 mm Clear Toughened Glass',
@@ -90,6 +92,25 @@ function App() {
     setItems(newItems);
   };
 
+  const handleDimensionChange = (index, field, value) => {
+    const newItems = [...items];
+    const item = newItems[index];
+    item[field] = value;
+    
+    const w = parseFloat(item.width) || 0;
+    const h = parseFloat(item.height) || 0;
+    
+    if (w > 0 || h > 0) {
+      item.dimension = `W ${w} mm × H ${h} mm`;
+      item.area = ((w * h) / 92903.04).toFixed(2);
+    } else {
+      item.dimension = '';
+      item.area = '';
+    }
+    
+    setItems(newItems);
+  };
+
   const handleImageUpload = (index, event) => {
     const file = event.target.files[0];
     if (file) {
@@ -109,6 +130,8 @@ function App() {
       system: '',
       type: '',
       dimension: '',
+      width: '',
+      height: '',
       area: '',
       location: '',
       glazing: '',
@@ -294,20 +317,27 @@ function App() {
                     
                     <div className="grid-2">
                       <div className="input-group">
-                        <label>Dimensions (W × H)</label>
-                        <input type="text" value={item.dimension} onChange={e => handleItemChange(index, 'dimension', e.target.value)} placeholder="W 1000 mm × H 1000 mm"/>
+                        <label>Width (mm)</label>
+                        <input type="number" value={item.width || ''} onChange={e => handleDimensionChange(index, 'width', e.target.value)} placeholder="e.g. 2400"/>
                       </div>
                       <div className="input-group">
-                        <label>Total Area (Sq.ft)</label>
-                        <input type="number" step="0.01" value={item.area} onChange={e => handleItemChange(index, 'area', e.target.value)} />
+                        <label>Height (mm)</label>
+                        <input type="number" value={item.height || ''} onChange={e => handleDimensionChange(index, 'height', e.target.value)} placeholder="e.g. 1200"/>
                       </div>
                     </div>
 
                     <div className="grid-2">
                       <div className="input-group">
+                        <label>Total Area (Sq.ft)</label>
+                        <input type="number" step="0.01" value={item.area} onChange={e => handleItemChange(index, 'area', e.target.value)} />
+                      </div>
+                      <div className="input-group">
                         <label>Quantity</label>
                         <input type="number" value={item.qty} onChange={e => handleItemChange(index, 'qty', parseInt(e.target.value)||0)} />
                       </div>
+                    </div>
+
+                    <div className="grid-2">
                       <div className="input-group">
                         <label>Rate per Sq.ft (₹)</label>
                         <input type="number" value={item.rate} onChange={e => handleItemChange(index, 'rate', parseFloat(e.target.value)||0)} />
