@@ -383,18 +383,20 @@ function App() {
               <label>Address Line 1</label>
               <input type="text" value={client.address} onChange={e => setClient({...client, address: e.target.value})} />
             </div>
-            <div className="input-group">
-              <label>City, State, PIN</label>
-              <input type="text" value={client.city} onChange={e => setClient({...client, city: e.target.value})} />
-            </div>
+            <div className="grid-2">
+              <div className="input-group">
+                <label>City, State, PIN</label>
+                <input type="text" value={client.city} onChange={e => setClient({...client, city: e.target.value})} />
+              </div>
               <div className="input-group">
                 <label>Phone Number</label>
                 <input type="text" value={client.phone || ''} onChange={e => setClient({...client, phone: e.target.value})} placeholder="+91 98765 43210"/>
               </div>
-              <div className="input-group">
-                <label>Email Address</label>
-                <input type="email" value={client.email || ''} onChange={e => setClient({...client, email: e.target.value})} placeholder="client@email.com"/>
-              </div>
+            </div>
+            <div className="input-group">
+              <label>Email Address</label>
+              <input type="email" value={client.email || ''} onChange={e => setClient({...client, email: e.target.value})} placeholder="client@email.com"/>
+            </div>
           </section>
 
           <section className="form-card">
@@ -420,19 +422,19 @@ function App() {
           </section>
 
           <section className="form-card items-section">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ borderBottom: 'none', margin: 0 }}>Line Items</h3>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <select onChange={loadTemplate} style={{ padding: '6px 10px', fontSize: '13px', borderRadius: '4px', border: '1px solid #ccc', background: '#fff', cursor: 'pointer' }}>
-                  <option value="">📂 Load Template...</option>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '16px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
+              <h3 style={{ borderBottom: 'none', margin: 0, paddingBottom: 0, flexShrink: 0, whiteSpace: 'nowrap' }}>Line Items</h3>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', flex: '1 1 auto', justifyContent: 'flex-end' }}>
+                <select onChange={loadTemplate} style={{ padding: '6px 10px', fontSize: '13px', borderRadius: '4px', border: '1px solid #ccc', background: '#fff', cursor: 'pointer', flexShrink: 0, minWidth: '130px', color: '#1e293b' }}>
+                  <option value="">Load Template...</option>
                   {templates.map(t => (
                     <option key={t.id} value={t.id}>{t.name}</option>
                   ))}
                 </select>
-                <button type="button" onClick={saveTemplate} className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f8fafc', color: '#1e293b', border: '1px solid #cbd5e1' }}>
+                <button type="button" onClick={saveTemplate} className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f8fafc', color: '#1e293b', border: '1px solid #cbd5e1', flexShrink: 0 }}>
                   <Save size={14} style={{ marginRight: '6px' }}/> Save as Template
                 </button>
-                <label className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', cursor: 'pointer', margin: 0 }}>
+                <label className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', cursor: 'pointer', margin: 0, flexShrink: 0 }}>
                   <FileSpreadsheet size={14} style={{ marginRight: '6px' }}/> Import Excel/CSV
                   <input type="file" accept=".xlsx, .xls, .csv" onChange={importExcel} hidden />
                 </label>
@@ -505,21 +507,26 @@ function App() {
                     
                     <div className="form-divider">Specifications</div>
 
-                    <div className="input-group">
-                      <label>Glazing</label>
-                      <input type="text" list="glazing-options" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} />
+                    <div className="grid-2">
+                      <div className="input-group">
+                        <label>Glazing</label>
+                        <input type="text" list="glazing-options" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} />
+                      </div>
+                      <div className="input-group">
+                        <label>Profile Color</label>
+                        <input type="text" list="color-options" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} />
+                      </div>
                     </div>
-                    <div className="input-group">
-                      <label>Profile Color</label>
-                      <input type="text" list="color-options" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} />
-                    </div>
-                    <div className="input-group">
-                      <label>Hardware</label>
-                      <input type="text" list="hardware-options" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} />
-                    </div>
-                    <div className="input-group">
-                      <label>Track / Frame Details</label>
-                      <input type="text" list="track-options" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} />
+                    
+                    <div className="grid-2">
+                      <div className="input-group">
+                        <label>Hardware</label>
+                        <input type="text" list="hardware-options" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} />
+                      </div>
+                      <div className="input-group">
+                        <label>Track / Frame Details</label>
+                        <input type="text" list="track-options" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} />
+                      </div>
                     </div>
                     
                     <div className="input-group image-upload">
