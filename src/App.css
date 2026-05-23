@@ -407,7 +407,7 @@ body { margin: 0; padding: 0; }
 .qp-bank-block p { font-size: 8.5pt; color: var(--text-mid); line-height: 2; margin:0;}
 .qp-bank-block strong { color: var(--text-dark); font-weight: 600; }
 
-.qp-totals-block { width: 76mm; border: 1px solid var(--rule); border-top: 3px solid var(--navy); overflow: hidden; }
+.qp-totals-block { width: 76mm; border: 1px solid var(--rule); border-top: 3px solid var(--navy); }
 .qp-totals-row { display: flex; justify-content: space-between; align-items: center; padding: 3mm 4mm; border-bottom: 1px solid var(--rule); font-size: 9pt; color: var(--text-mid); }
 .qp-totals-row:last-child { background: var(--navy); color: #fff; border-bottom: none; padding: 5mm 4mm; }
 .qp-totals-row:last-child .t-label, .qp-totals-row:last-child .t-value { font-family: var(--font-serif); font-size: 16pt; font-weight: 700; color: #fff; letter-spacing: 0.5px; }

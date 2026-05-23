@@ -203,69 +203,71 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             * <strong>dormakaba</strong> — Swiss precision hardware, one of the top 3 access & security brands worldwide.
           </div>
 
-          <div className="qp-totals-section">
-            <div className="qp-bank-block">
-              <h4>Bank Details</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <table style={{ fontSize: '8pt', borderCollapse: 'collapse', lineHeight: '1.6', textAlign: 'left' }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account Name</td>
-                      <td><strong>WADHWA ENTERPRISES</strong></td>
-                    </tr>
-                    <tr>
-                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account No.</td>
-                      <td><strong>09410400008722</strong></td>
-                    </tr>
-                    <tr>
-                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Bank</td>
-                      <td><strong>Bank of Baroda, Sisamau, Kanpur</strong></td>
-                    </tr>
-                    <tr>
-                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>IFSC Code</td>
-                      <td><strong>BARB0SISAMA</strong></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div style={{ textAlign: 'center', background: 'white', padding: '6px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
-                  <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={85} />
-                  <div style={{ fontSize: '6.5pt', marginTop: '4px', color: 'var(--navy)', fontWeight: '700', letterSpacing: '0.5px' }}>SCAN TO PAY</div>
+          <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'block' }}>
+            <div className="qp-totals-section">
+              <div className="qp-bank-block">
+                <h4>Bank Details</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <table style={{ fontSize: '8pt', borderCollapse: 'collapse', lineHeight: '1.6', textAlign: 'left' }}>
+                    <tbody>
+                      <tr>
+                        <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account Name</td>
+                        <td><strong>WADHWA ENTERPRISES</strong></td>
+                      </tr>
+                      <tr>
+                        <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account No.</td>
+                        <td><strong>09410400008722</strong></td>
+                      </tr>
+                      <tr>
+                        <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Bank</td>
+                        <td><strong>Bank of Baroda, Sisamau, Kanpur</strong></td>
+                      </tr>
+                      <tr>
+                        <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>IFSC Code</td>
+                        <td><strong>BARB0SISAMA</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div style={{ textAlign: 'center', background: 'white', padding: '6px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
+                    <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={85} />
+                    <div style={{ fontSize: '6.5pt', marginTop: '4px', color: 'var(--navy)', fontWeight: '700', letterSpacing: '0.5px' }}>SCAN TO PAY</div>
+                  </div>
                 </div>
+                <p style={{ marginTop: '2mm' }}>
+                  <strong style={{ color: 'var(--gold)', fontSize: '8pt' }}>GSTIN &nbsp;</strong> 
+                  <strong style={{ fontSize: '10pt' }}>09AABPW2030P1ZD</strong>
+                </p>
               </div>
-              <p style={{ marginTop: '2mm' }}>
-                <strong style={{ color: 'var(--gold)', fontSize: '8pt' }}>GSTIN &nbsp;</strong> 
-                <strong style={{ fontSize: '10pt' }}>09AABPW2030P1ZD</strong>
-              </p>
-            </div>
 
-            <div className="qp-totals-block">
-              <div className="qp-totals-row">
-                <span className="t-label">Basic Value</span>
-                <span className="t-value">{formatCurrency(subtotal)}</span>
-              </div>
-              <div className="qp-totals-row">
-                <span className="t-label">Discount</span>
-                <span className="t-value" style={{color: '#e53e3e'}}>- {formatCurrency(totals.discount)}</span>
-              </div>
-              <div className="qp-totals-row">
-                <span className="t-label">Logistics</span>
-                <span className="t-value">{formatCurrency(totals.logistics)}</span>
-              </div>
-              <div className="qp-totals-row">
-                <span className="t-label">Installation</span>
-                <span className="t-value">{formatCurrency(totals.installation)}</span>
-              </div>
-              <div className="qp-totals-row" style={{ borderTop: '2px solid var(--rule)' }}>
-                <span className="t-label">Subtotal (excl. GST)</span>
-                <span className="t-value">{formatCurrency(finalSubtotal)}</span>
-              </div>
-              <div className="qp-totals-row">
-                <span className="t-label">GST @ 18%</span>
-                <span className="t-value">{formatCurrency(gst)}</span>
-              </div>
-              <div className="qp-totals-row">
-                <span className="t-label">Grand Total</span>
-                <span className="t-value">{formatCurrency(grandTotal)}</span>
+              <div className="qp-totals-block">
+                <div className="qp-totals-row">
+                  <span className="t-label">Basic Value</span>
+                  <span className="t-value">{formatCurrency(subtotal)}</span>
+                </div>
+                <div className="qp-totals-row">
+                  <span className="t-label">Discount</span>
+                  <span className="t-value" style={{color: '#e53e3e'}}>- {formatCurrency(totals.discount)}</span>
+                </div>
+                <div className="qp-totals-row">
+                  <span className="t-label">Logistics</span>
+                  <span className="t-value">{formatCurrency(totals.logistics)}</span>
+                </div>
+                <div className="qp-totals-row">
+                  <span className="t-label">Installation</span>
+                  <span className="t-value">{formatCurrency(totals.installation)}</span>
+                </div>
+                <div className="qp-totals-row" style={{ borderTop: '2px solid var(--rule)' }}>
+                  <span className="t-label">Subtotal (excl. GST)</span>
+                  <span className="t-value">{formatCurrency(finalSubtotal)}</span>
+                </div>
+                <div className="qp-totals-row">
+                  <span className="t-label">GST @ 18%</span>
+                  <span className="t-value">{formatCurrency(gst)}</span>
+                </div>
+                <div className="qp-totals-row">
+                  <span className="t-label">Grand Total</span>
+                  <span className="t-value">{formatCurrency(grandTotal)}</span>
+                </div>
               </div>
             </div>
           </div>
