@@ -417,10 +417,22 @@ body { margin: 0; padding: 0; }
 /* Print Media Query */
 @media print {
   @page { margin: 0; size: A4; }
-  body { background: white !important; margin: 0 !important; padding: 0 !important; }
+  body, html { 
+    background: white !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    height: auto !important; 
+  }
   body * { visibility: hidden; }
   
   .no-print { display: none !important; }
+  
+  .quote-builder-layout {
+    height: auto !important;
+    width: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
   
   .quote-preview-panel {
     position: absolute;
@@ -430,6 +442,7 @@ body { margin: 0; padding: 0; }
     padding: 0;
     background: transparent;
     display: block; /* Ensure it's not flex during print */
+    overflow: visible !important;
   }
   
   .quotation-preview-container { 
