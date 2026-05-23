@@ -63,6 +63,14 @@ function App() {
     installation: 12500
   }, 'windal-totals');
 
+  // Dynamically update document title so PDF saves with correct name
+  useEffect(() => {
+    const safeQuoteNo = meta.quoteNo ? meta.quoteNo.trim() : 'Quotation';
+    const safeClient = client.name ? client.name.trim() : 'Client';
+    const safeProject = project.name ? project.name.trim() : 'Project';
+    document.title = `${safeQuoteNo} - ${safeClient} - ${safeProject}`;
+  }, [meta.quoteNo, client.name, project.name]);
+
   // State to manage collapsed items
   const [expandedItems, setExpandedItems] = useState({ 0: true });
 
