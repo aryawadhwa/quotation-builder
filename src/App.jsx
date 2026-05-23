@@ -94,12 +94,6 @@ function App() {
 
   const currentSubtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
 
-  const handleDiscountPercentChange = (e) => {
-    const pct = parseFloat(e.target.value) || 0;
-    const discountAmount = Math.round(currentSubtotal * (pct / 100));
-    setTotals({ ...totals, discount: discountAmount });
-  };
-
   const handleDimensionChange = (index, field, value) => {
     const newItems = [...items];
     const item = newItems[index];
@@ -161,7 +155,7 @@ function App() {
   const clearForm = () => {
     if(window.confirm("Are you sure you want to clear all fields?")) {
       setMeta({ quoteNo: '', date: '', validUntil: '', preparedBy: '' });
-      setClient({ name: '', address: '', city: '', contact: '' });
+      setClient({ name: '', address: '', city: '', phone: '', email: '' });
       setProject({ name: '', address: '', architect: '', refNo: '' });
       setItems([]);
       setTotals({ discount: 0, logistics: 0, installation: 0 });
@@ -215,6 +209,14 @@ function App() {
           <option value="Aluminium Folding Door" />
           <option value="Frameless Glass Door" />
           <option value="Shower Enclosure" />
+        </datalist>
+
+        <datalist id="track-options">
+          <option value="2.5 Track Bottom" />
+          <option value="3 Track Bottom" />
+          <option value="3.5 Track Bottom" />
+          <option value="Slim Outer Frame" />
+          <option value="Concealed Frame" />
         </datalist>
 
         <div className="form-header">
@@ -272,10 +274,14 @@ function App() {
               <label>City, State, PIN</label>
               <input type="text" value={client.city} onChange={e => setClient({...client, city: e.target.value})} />
             </div>
-            <div className="input-group">
-              <label>Phone / Email</label>
-              <input type="text" value={client.contact} onChange={e => setClient({...client, contact: e.target.value})} />
-            </div>
+              <div className="input-group">
+                <label>Phone Number</label>
+                <input type="text" value={client.phone || ''} onChange={e => setClient({...client, phone: e.target.value})} placeholder="+91 98765 43210"/>
+              </div>
+              <div className="input-group">
+                <label>Email Address</label>
+                <input type="email" value={client.email || ''} onChange={e => setClient({...client, email: e.target.value})} placeholder="client@email.com"/>
+              </div>
           </section>
 
           <section className="form-card">
@@ -380,7 +386,7 @@ function App() {
                     </div>
                     <div className="input-group">
                       <label>Track / Frame Details</label>
-                      <input type="text" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} />
+                      <input type="text" list="track-options" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} />
                     </div>
                     
                     <div className="input-group image-upload">
@@ -407,12 +413,15 @@ function App() {
             <h3>Pricing & Totals</h3>
             <div className="grid-2">
               <div className="input-group">
-                <label>Discount (%)</label>
-                <input type="number" step="0.1" value={currentSubtotal > 0 ? ((totals.discount / currentSubtotal) * 100).toFixed(1).replace(/\.0$/, '') : 0} onChange={handleDiscountPercentChange} placeholder="e.g. 10" />
+                <label>Discount Type</label>
+                <select value={totals.discountType || '₹'} onChange={e => setTotals({...totals, discountType: e.target.value})}>
+                  <option value="₹">Amount (₹)</option>
+                  <option value="%">Percentage (%)</option>
+                </select>
               </div>
               <div className="input-group">
-                <label>Discount (₹)</label>
-                <input type="number" value={totals.discount} onChange={e => setTotals({...totals, discount: parseFloat(e.target.value)||0})} />
+                <label>Discount Value</label>
+                <input type="number" step="0.1" value={totals.discount} onChange={e => setTotals({...totals, discount: parseFloat(e.target.value)||0})} placeholder="0" />
               </div>
             </div>
             <div className="grid-2" style={{ marginTop: '12px' }}>

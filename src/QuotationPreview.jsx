@@ -14,7 +14,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const QuotationPreview = ({ meta, client, project, items, totals }) => {
   const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
-  const finalSubtotal = subtotal - totals.discount + totals.logistics + totals.installation;
+  const discountAmount = totals.discountType === '%' 
+    ? (subtotal * (parseFloat(totals.discount) || 0)) / 100 
+    : (parseFloat(totals.discount) || 0);
+
+  const finalSubtotal = subtotal - discountAmount + totals.logistics + totals.installation;
   const gst = finalSubtotal * 0.18;
   const grandTotal = finalSubtotal + gst;
 
@@ -64,7 +68,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
               <p>
                 {client.address}<br />
                 {client.city}<br />
-                {client.contact}
+                {client.phone} {client.phone && client.email ? ' · ' : ''} {client.email}
               </p>
             </div>
             <div className="qp-info-card gold-top">
@@ -260,10 +264,14 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
                   <span className="t-label">Basic Value</span>
                   <span className="t-value">{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="qp-totals-row">
-                  <span className="t-label">Discount</span>
-                  <span className="t-value" style={{color: '#e53e3e'}}>- {formatCurrency(totals.discount)}</span>
-                </div>
+                {discountAmount > 0 && (
+                  <div className="qp-totals-row">
+                    <span className="t-label">
+                      Discount {totals.discountType === '%' ? `(@ ${totals.discount}%)` : ''}
+                    </span>
+                    <span className="t-value" style={{color: '#e53e3e'}}>- {formatCurrency(discountAmount)}</span>
+                  </div>
+                )}
                 <div className="qp-totals-row">
                   <span className="t-label">Logistics</span>
                   <span className="t-value">{formatCurrency(totals.logistics)}</span>
