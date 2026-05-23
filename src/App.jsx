@@ -92,6 +92,14 @@ function App() {
     setItems(newItems);
   };
 
+  const currentSubtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
+
+  const handleDiscountPercentChange = (e) => {
+    const pct = parseFloat(e.target.value) || 0;
+    const discountAmount = Math.round(currentSubtotal * (pct / 100));
+    setTotals({ ...totals, discount: discountAmount });
+  };
+
   const handleDimensionChange = (index, field, value) => {
     const newItems = [...items];
     const item = newItems[index];
@@ -385,11 +393,17 @@ function App() {
 
           <section className="form-card">
             <h3>Pricing & Totals</h3>
-            <div className="grid-3">
+            <div className="grid-2">
+              <div className="input-group">
+                <label>Discount (%)</label>
+                <input type="number" step="0.1" value={currentSubtotal > 0 ? ((totals.discount / currentSubtotal) * 100).toFixed(1).replace(/\.0$/, '') : 0} onChange={handleDiscountPercentChange} placeholder="e.g. 10" />
+              </div>
               <div className="input-group">
                 <label>Discount (₹)</label>
                 <input type="number" value={totals.discount} onChange={e => setTotals({...totals, discount: parseFloat(e.target.value)||0})} />
               </div>
+            </div>
+            <div className="grid-2" style={{ marginTop: '12px' }}>
               <div className="input-group">
                 <label>Logistics (₹)</label>
                 <input type="number" value={totals.logistics} onChange={e => setTotals({...totals, logistics: parseFloat(e.target.value)||0})} />
