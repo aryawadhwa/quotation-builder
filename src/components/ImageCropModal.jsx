@@ -5,10 +5,15 @@ import getCroppedImg from '../utils/cropImage';
 const ImageCropModal = ({ imageSrc, onSave, onClose }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [aspect, setAspect] = useState(4 / 3);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const onMediaLoaded = useCallback((mediaSize) => {
+    setAspect(mediaSize.width / mediaSize.height);
   }, []);
 
   const handleSave = async () => {
@@ -34,7 +39,8 @@ const ImageCropModal = ({ imageSrc, onSave, onClose }) => {
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={4 / 3} // We can remove aspect to allow free cropping, or keep it. Let's make it flexible.
+            aspect={aspect}
+            onMediaLoaded={onMediaLoaded}
             onCropChange={setCrop}
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
