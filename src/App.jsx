@@ -5,13 +5,19 @@ import './App.css';
 
 function useStickyState(defaultValue, key) {
   const [value, setValue] = useState(() => {
-    const stickyValue = window.localStorage.getItem(key);
-    return stickyValue !== null
-      ? JSON.parse(stickyValue)
-      : defaultValue;
+    try {
+      const stickyValue = window.localStorage.getItem(key);
+      return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
+    } catch (e) {
+      return defaultValue;
+    }
   });
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+      console.warn("Storage quota exceeded or unavailable.", e);
+    }
   }, [key, value]);
   return [value, setValue];
 }
@@ -87,8 +93,11 @@ function App() {
   const handleImageUpload = (index, event) => {
     const file = event.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      handleItemChange(index, 'imageBlob', url);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleItemChange(index, 'imageBlob', reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
