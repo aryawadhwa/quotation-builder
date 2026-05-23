@@ -5,6 +5,7 @@ import award1 from './assets/awards/IIID_Best_Stall_Design_Award_2023.jpeg';
 import award2 from './assets/awards/IDEA_24_Trophy.jpeg';
 import award3 from './assets/awards/IDEA_25_Exhibitor.jpeg';
 import award4 from './assets/awards/IDEA_23_Exhibitor.jpeg';
+import award5 from './assets/awards/Fabricator_Certificate.png';
 
 const QuotationPreview = ({ meta, client, project, items, totals }) => {
   const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
@@ -92,24 +93,29 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <div className="qp-awards-strip-label">Recognition</div>
             <div className="qp-awards-row">
               <div className="qp-award-card">
-                <img src={award1} alt="Best Stall Design" />
-                <div className="qp-award-card-name">Best Stall Award</div>
-                <div className="qp-award-card-sub">IDCS · IIID 2023</div>
+                <img src={award5} alt="AluK Fabricator Certificate" />
+                <div className="qp-award-card-name">Certified AluK</div>
+                <div className="qp-award-card-sub">Fabricator Partner</div>
               </div>
               <div className="qp-award-card">
-                <img src={award2} alt="Exhibitor Trophy" />
-                <div className="qp-award-card-name">Exhibitor<br />Trophy</div>
-                <div className="qp-award-card-sub">IDEA '24 · KAA</div>
+                <img src={award1} alt="IIID Best Stall Design Award" />
+                <div className="qp-award-card-name">Best Design</div>
+                <div className="qp-award-card-sub">IIID 2023</div>
               </div>
               <div className="qp-award-card">
-                <img src={award3} alt="IDEA 25" />
-                <div className="qp-award-card-name">Best Stall Design<br />Award</div>
-                <div className="qp-award-card-sub">IDEA '25 · KAA</div>
+                <img src={award2} alt="IDEA 24 Trophy" />
+                <div className="qp-award-card-name">Excellence</div>
+                <div className="qp-award-card-sub">IDEA 2024</div>
               </div>
               <div className="qp-award-card">
-                <img src={award4} alt="IDEA 23" />
-                <div className="qp-award-card-name">Exhibitor<br />Trophy</div>
-                <div className="qp-award-card-sub">IDEA '23 · KAA</div>
+                <img src={award3} alt="IDEA 25 Exhibitor" />
+                <div className="qp-award-card-name">Exhibitor</div>
+                <div className="qp-award-card-sub">IDEA 2025</div>
+              </div>
+              <div className="qp-award-card">
+                <img src={award4} alt="IDEA 23 Exhibitor" />
+                <div className="qp-award-card-name">Exhibitor</div>
+                <div className="qp-award-card-sub">IDEA 2023</div>
               </div>
             </div>
           </div>
