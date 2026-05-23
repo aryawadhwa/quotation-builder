@@ -154,8 +154,8 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
           <table className="qp-items-table">
             <thead>
               <tr>
-                <th width="10%">Code</th>
-                <th width="52%">System Specification</th>
+                <th width="25%">Code & Drawing</th>
+                <th width="37%">System Specification</th>
                 <th width="6%" style={{ textAlign: 'center' }}>Qty</th>
                 <th width="16%" style={{ textAlign: 'right' }}>Rate / Unit</th>
                 <th width="16%" style={{ textAlign: 'right' }}>Amount (₹)</th>
