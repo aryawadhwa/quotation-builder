@@ -49,7 +49,7 @@ function App() {
       location: 'Master Bedroom',
       glazing: '8 mm Clear Toughened Glass',
       profile: 'AluK · Powder Coat · Graphite Grey',
-      hardware: 'dormakaba Single Point Flush Handle (Black)',
+      hardware: 'Single Point Flush Handle (Black)',
       track: '3.5 Bottom Track 120.1 mm × 45 mm',
       qty: 1,
       rate: 2419,

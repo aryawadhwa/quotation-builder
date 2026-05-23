@@ -82,7 +82,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
           <div className="qp-intro-text">
             <p>Dear {client.name},</p>
             <p>Thank you for considering Windal Systems for your project. It is a privilege to present this quotation, and we look forward to being a trusted part of your space from start to finish.</p>
-            <p>Every system we supply is custom-fabricated to your exact openings using <strong>AluK aluminium profiles</strong> and <strong>dormakaba hardware</strong> — both globally certified European brands used in landmark residential and commercial projects across India. Our systems are built and tested for thermal comfort, sound control, wind resistance, and long-term structural strength.</p>
+            <p>Every system we supply is custom-fabricated to your exact openings using <strong>AluK aluminium profiles</strong>, a globally certified European brand used in landmark residential and commercial projects across India. Our systems are built and tested for thermal comfort, sound control, wind resistance, and long-term structural strength.</p>
             <p>We are confident the solution below will enhance both the beauty and functionality of your space for decades to come. Our team is available at every step — from survey to installation and beyond.</p>
             <p style={{ marginTop: '3mm', fontStyle: 'italic', color: 'var(--text-soft)' }}>We value this opportunity and look forward to a long-standing association with you.</p>
             <p style={{ marginTop: '3mm' }}>Warm regards,<br /><strong style={{ color: 'var(--navy)' }}>Samir Wadhwa</strong><br /><span style={{ fontSize: '8pt', color: 'var(--text-soft)' }}>Director, Wadhwa Enterprises</span></p>
@@ -200,7 +200,6 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
 
           <div style={{ fontSize: '7.5pt', color: 'var(--text-soft)', marginTop: '4mm', marginBottom: '8mm' }}>
             * <strong>AluK</strong> — globally certified European aluminium systems brand used across India.<br />
-            * <strong>dormakaba</strong> — Swiss precision hardware, one of the top 3 access & security brands worldwide.
           </div>
 
           <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'block' }}>
