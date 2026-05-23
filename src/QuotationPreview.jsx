@@ -207,9 +207,9 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
                   Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Bank of Baroda, Sisamau, Kanpur</strong><br />
                   IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>BARB0SISAMA</strong><br />
                 </p>
-                <div style={{ textAlign: 'center', background: 'white', padding: '4px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
-                  <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={54} />
-                  <div style={{ fontSize: '5pt', marginTop: '2px', color: 'var(--navy)', fontWeight: '600' }}>SCAN TO PAY</div>
+                <div style={{ textAlign: 'center', background: 'white', padding: '6px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
+                  <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={85} />
+                  <div style={{ fontSize: '6.5pt', marginTop: '4px', color: 'var(--navy)', fontWeight: '700', letterSpacing: '0.5px' }}>SCAN TO PAY</div>
                 </div>
               </div>
               <p style={{ marginTop: '2mm' }}>
