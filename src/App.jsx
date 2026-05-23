@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
 import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy, Save, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import logo from './assets/brand_assets/LOGO - Windal.png';
+import ImageCropModal from './components/ImageCropModal';
 import './App.css';
 
 function useStickyState(defaultValue, key) {
@@ -24,6 +26,8 @@ function useStickyState(defaultValue, key) {
 }
 
 function App() {
+  const [cropModalData, setCropModalData] = useState(null);
+
   const [meta, setMeta] = useStickyState({
     quoteNo: 'WIN-QT-2026-001',
     date: '15 March 2026',
@@ -121,7 +125,11 @@ function App() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        handleItemChange(index, 'imageBlob', reader.result);
+        if (file.type === 'application/pdf') {
+          handleItemChange(index, 'imageBlob', reader.result);
+        } else {
+          setCropModalData({ index, imageSrc: reader.result });
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -333,7 +341,7 @@ function App() {
         </datalist>
 
         <div className="form-header">
-          <h2>Windal Quote Builder</h2>
+          <img src={logo} alt="Windal" style={{ height: '32px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           <div className="header-actions">
             <button onClick={exportQuote} className="action-btn" title="Save as Template">
               <Download size={16} /> Save
@@ -588,6 +596,17 @@ function App() {
           totals={totals} 
         />
       </div>
+
+      {cropModalData && (
+        <ImageCropModal
+          imageSrc={cropModalData.imageSrc}
+          onSave={(croppedImg) => {
+            handleItemChange(cropModalData.index, 'imageBlob', croppedImg);
+            setCropModalData(null);
+          }}
+          onClose={() => setCropModalData(null)}
+        />
+      )}
     </div>
   );
 }
