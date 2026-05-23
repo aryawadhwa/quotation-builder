@@ -201,12 +201,26 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <div className="qp-bank-block">
               <h4>Bank Details</h4>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p>
-                  Account Name &nbsp;&nbsp;&nbsp;<strong>WADHWA ENTERPRISES</strong><br />
-                  Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>09410400008722</strong><br />
-                  Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Bank of Baroda, Sisamau, Kanpur</strong><br />
-                  IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>BARB0SISAMA</strong><br />
-                </p>
+                <table style={{ fontSize: '8pt', borderCollapse: 'collapse', lineHeight: '1.6', textAlign: 'left' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account Name</td>
+                      <td><strong>WADHWA ENTERPRISES</strong></td>
+                    </tr>
+                    <tr>
+                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Account No.</td>
+                      <td><strong>09410400008722</strong></td>
+                    </tr>
+                    <tr>
+                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>Bank</td>
+                      <td><strong>Bank of Baroda, Sisamau, Kanpur</strong></td>
+                    </tr>
+                    <tr>
+                      <td style={{ color: 'var(--text-soft)', paddingRight: '12px' }}>IFSC Code</td>
+                      <td><strong>BARB0SISAMA</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
                 <div style={{ textAlign: 'center', background: 'white', padding: '6px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
                   <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={85} />
                   <div style={{ fontSize: '6.5pt', marginTop: '4px', color: 'var(--navy)', fontWeight: '700', letterSpacing: '0.5px' }}>SCAN TO PAY</div>
