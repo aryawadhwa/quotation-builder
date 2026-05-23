@@ -238,12 +238,12 @@ body { margin: 0; padding: 0; }
 
 /* ─── Preview Print Styles ─── */
 :root {
-  --navy:      #0B1728;
-  --navy-mid:  #152238;
-  --gold:      #B8973A;
-  --gold-lt:   #D4AF55;
-  --gold-pale: #F5EDD3;
-  --off-white: #FAFAF8;
+  --navy:      #1e293b;
+  --navy-mid:  #334155;
+  --gold:      #3b82f6;
+  --gold-lt:   #60a5fa;
+  --gold-pale: #eff6ff;
+  --off-white: #f8fafc;
   --text-dark: #1A2535;
   --text-mid:  #4A5568;
   --text-soft: #718096;

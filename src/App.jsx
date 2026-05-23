@@ -30,6 +30,22 @@ function useStickyState(defaultValue, key) {
 
 function App() {
   const [cropModalData, setCropModalData] = useState(null);
+  const [jpegLogo, setJpegLogo] = useState(null);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      setJpegLogo(canvas.toDataURL('image/jpeg', 1.0));
+    };
+    img.src = logo;
+  }, []);
 
   const [meta, setMeta] = useStickyState({
     quoteNo: 'WIN-QT-2026-001',
@@ -367,7 +383,7 @@ function App() {
             </label>
             <button onClick={clearForm} className="clear-btn">Clear All</button>
             <PDFDownloadLink 
-              document={<QuotationPDFDocument meta={meta} client={client} project={project} items={items} totals={totals} logoUrl={logo} />} 
+              document={<QuotationPDFDocument meta={meta} client={client} project={project} items={items} totals={totals} logoUrl={jpegLogo || logo} />} 
               fileName={`${meta.quoteNo || 'Quote'}.pdf`}
               className="print-btn"
               style={{ textDecoration: 'none' }}
@@ -617,7 +633,7 @@ function App() {
             project={project} 
             items={items} 
             totals={totals}
-            logoUrl={logo}
+            logoUrl={jpegLogo || logo}
           />
         </PDFViewer>
       </div>
