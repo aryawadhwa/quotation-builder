@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
 import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy, Save, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import jpgLogo from './assets/brand_assets/LOGO - Windal.jpg';
-import pngLogo from './assets/brand_assets/LOGO - Windal.png';
+import jpgLogo from './assets/brand_assets/LOGO_Blue.jpg';
+import pngLogo from './assets/brand_assets/LOGO_Blue.png';
 import QRCode from 'qrcode';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import Split from 'react-split';
@@ -378,7 +378,7 @@ function App() {
         </datalist>
 
         <div className="form-header">
-          <img src={pngLogo} alt="Windal" style={{ height: '32px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+          <img src={pngLogo} alt="Windal" style={{ height: '32px', objectFit: 'contain' }} />
           <div className="header-actions">
             <button onClick={exportQuote} className="action-btn" title="Save as Template">
               <Download size={16} /> Save

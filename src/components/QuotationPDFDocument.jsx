@@ -44,10 +44,12 @@ const styles = StyleSheet.create({
   logo: {
     height: 45,
     width: 'auto',
+    objectFit: 'contain'
   },
   logoCompact: {
     height: 30,
     width: 'auto',
+    objectFit: 'contain'
   },
   tagline: {
     fontSize: 6.5,
@@ -96,7 +98,8 @@ const styles = StyleSheet.create({
     padding: 12,
     border: `1px solid ${RULE}`,
     borderTop: `2px solid ${NAVY}`,
-    backgroundColor: '#f8fafc'
+    backgroundColor: '#f8fafc',
+    justifyContent: 'flex-start'
   },
   infoCardBlue: {
     borderTop: `2px solid ${BLUE}`
