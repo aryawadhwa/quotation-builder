@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
-import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy } from 'lucide-react';
+import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy, Save, FileSpreadsheet } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import './App.css';
 
 function useStickyState(defaultValue, key) {
@@ -70,6 +71,8 @@ function App() {
     logistics: 10000,
     installation: 12500
   }, 'windal-totals');
+
+  const [templates, setTemplates] = useStickyState([], 'windal-templates');
 
   // Dynamically update document title so PDF saves with correct name
   useEffect(() => {
@@ -179,6 +182,72 @@ function App() {
       setItems([]);
       setTotals({ discount: 0, logistics: 0, installation: 0 });
     }
+  };
+
+  const saveTemplate = () => {
+    const name = window.prompt("Enter a name for this template (e.g., 'Standard 3BHK'):");
+    if (name) {
+      const newTemplate = { id: Date.now(), name, items: items.map(item => ({...item, id: Date.now() + Math.random()})) };
+      setTemplates([...templates, newTemplate]);
+      alert(`Template '${name}' saved!`);
+    }
+  };
+
+  const loadTemplate = (e) => {
+    if (!e.target.value) return;
+    const template = templates.find(t => t.id.toString() === e.target.value);
+    if (template) {
+      if (items.length > 0 && !window.confirm("This will replace your current items. Continue?")) {
+        e.target.value = '';
+        return;
+      }
+      setItems(template.items.map(item => ({...item, id: Date.now() + Math.random()})));
+      setExpandedItems({ 0: true });
+    }
+    e.target.value = '';
+  };
+
+  const importExcel = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+
+        const importedItems = data.map((row, index) => ({
+          id: Date.now() + index,
+          code: row['Code'] || row['Item Code'] || `Item ${index + 1}`,
+          location: row['Location'] || row['Room'] || '',
+          system: row['System'] || row['System Name'] || row['Profile'] || '',
+          type: row['Type'] || row['System Type'] || '',
+          width: parseFloat(row['Width']) || 0,
+          height: parseFloat(row['Height']) || 0,
+          area: parseFloat(row['Area']) || 0,
+          qty: parseInt(row['Qty'] || row['Quantity']) || 1,
+          rate: parseFloat(row['Rate'] || row['Price']) || 0,
+          glazing: row['Glazing'] || row['Glass'] || row['Glass Type'] || '',
+          profile: row['Profile Color'] || row['Color'] || '',
+          hardware: row['Hardware'] || '',
+          track: row['Track'] || row['Track Details'] || '',
+          imageBlob: null
+        }));
+
+        setItems([...items, ...importedItems]);
+        setExpandedItems(prev => ({ ...prev, [items.length]: true }));
+        alert(`Successfully imported ${importedItems.length} items!`);
+      } catch (err) {
+        alert("Error parsing spreadsheet. Please make sure it's a valid Excel or CSV file.");
+        console.error(err);
+      }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = ''; // reset input
   };
 
   const exportQuote = () => {
@@ -351,7 +420,24 @@ function App() {
           </section>
 
           <section className="form-card items-section">
-            <h3 style={{ borderBottom: 'none', marginBottom: 0 }}>Line Items</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ borderBottom: 'none', margin: 0 }}>Line Items</h3>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <select onChange={loadTemplate} style={{ padding: '6px 10px', fontSize: '13px', borderRadius: '4px', border: '1px solid #ccc', background: '#fff', cursor: 'pointer' }}>
+                  <option value="">📂 Load Template...</option>
+                  {templates.map(t => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={saveTemplate} className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f8fafc', color: '#1e293b', border: '1px solid #cbd5e1' }}>
+                  <Save size={14} style={{ marginRight: '6px' }}/> Save as Template
+                </button>
+                <label className="action-btn" style={{ padding: '6px 12px', fontSize: '13px', height: 'auto', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', cursor: 'pointer', margin: 0 }}>
+                  <FileSpreadsheet size={14} style={{ marginRight: '6px' }}/> Import Excel/CSV
+                  <input type="file" accept=".xlsx, .xls, .csv" onChange={importExcel} hidden />
+                </label>
+              </div>
+            </div>
             
             {items.map((item, index) => (
               <div key={item.id} className={`item-card ${expandedItems[index] ? 'expanded' : 'collapsed'}`}>
