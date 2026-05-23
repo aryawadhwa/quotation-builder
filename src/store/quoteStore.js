@@ -193,7 +193,7 @@ export const useQuoteStore = create(
             meta: state.meta,
             client: state.client,
             project: state.project,
-            items: state.items.map(({ imageBlob, ...rest }) => ({ ...rest, imageBlob: null })),
+            items: state.items.map((item) => ({ ...item, imageBlob: null })),
             totals: state.totals,
           },
         };
