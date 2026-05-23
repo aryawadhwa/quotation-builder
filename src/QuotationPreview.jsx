@@ -1,5 +1,5 @@
 import React from 'react';
-import QRCode from 'react-qr-code';
+import { QRCodeSVG } from 'qrcode.react';
 import logo from './assets/brand_assets/LOGO - Windal.png';
 import award1 from './assets/awards/IIID_Best_Stall_Design_Award_2023.jpeg';
 import award2 from './assets/awards/IDEA_24_Trophy.jpeg';
@@ -208,7 +208,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
                   IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>BARB0SISAMA</strong><br />
                 </p>
                 <div style={{ textAlign: 'center', background: 'white', padding: '4px', border: '1px solid var(--rule)', borderRadius: '4px' }}>
-                  <QRCode value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={54} />
+                  <QRCodeSVG value="upi://pay?pa=wadhw98390@barodampay&pn=WADHWA%20ENTERPRISES&cu=INR" size={54} />
                   <div style={{ fontSize: '5pt', marginTop: '2px', color: 'var(--navy)', fontWeight: '600' }}>SCAN TO PAY</div>
                 </div>
               </div>
