@@ -366,8 +366,13 @@ function App() {
                     <div className="input-group image-upload">
                       <label>Technical Drawing / Image</label>
                       <div className="upload-box">
-                        <input type="file" accept=".png, image/png, .jpg, .jpeg, image/jpeg" onChange={(e) => handleImageUpload(index, e)} />
-                        {item.imageBlob && <span className="upload-success">✓ Image attached</span>}
+                        <input type="file" accept=".pdf, application/pdf, .png, image/png, .jpg, .jpeg, image/jpeg" onChange={(e) => handleImageUpload(index, e)} />
+                        {item.imageBlob && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span className="upload-success">✓ Attached</span>
+                            <button type="button" onClick={() => handleItemChange(index, 'imageBlob', null)} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline' }}>Remove</button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -6,6 +6,11 @@ import award2 from './assets/awards/IDEA_24_Trophy.jpeg';
 import award3 from './assets/awards/IDEA_25_Exhibitor.jpeg';
 import award4 from './assets/awards/IDEA_23_Exhibitor.jpeg';
 import award5 from './assets/awards/Fabricator_Certificate.png';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const QuotationPreview = ({ meta, client, project, items, totals }) => {
   const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
@@ -161,7 +166,13 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
                       <div className="qp-item-code">{item.code}</div>
                       <div className="qp-item-thumb">
                         {item.imageBlob ? (
-                          <img src={item.imageBlob} alt="Drawing" />
+                          item.imageBlob.startsWith('data:application/pdf') ? (
+                            <Document file={item.imageBlob} loading="Loading PDF...">
+                              <Page pageNumber={1} width={280} renderTextLayer={false} renderAnnotationLayer={false} />
+                            </Document>
+                          ) : (
+                            <img src={item.imageBlob} alt="Drawing" />
+                          )
                         ) : (
                           <>
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#607d8b" strokeWidth="1.2">
