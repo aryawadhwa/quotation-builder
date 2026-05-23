@@ -305,7 +305,9 @@ const styles = StyleSheet.create({
   bankValue: {
     fontFamily: 'Helvetica-Bold',
     fontSize: 8,
-    color: NAVY_MID
+    color: NAVY_MID,
+    flex: 1,
+    flexWrap: 'wrap'
   },
   totalsBox: {
     width: '45%'
