@@ -40,10 +40,14 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
           <div className="qp-doc-title-row">
             <h1>Quota<em>tion</em></h1>
             <div className="qp-doc-meta-box">
-              <strong>{meta.quoteNo || 'WIN-QT-YYYY-XXX'}</strong>
-              Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; {meta.date}<br />
-              Valid Until :&nbsp; {meta.validUntil}<br />
-              Prepared by :&nbsp; {meta.preparedBy}
+              <strong style={{ display: 'block', marginBottom: '4px' }}>{meta.quoteNo || 'WIN-QT-YYYY-XXX'}</strong>
+              <table style={{ fontSize: 'inherit', color: 'inherit', borderCollapse: 'collapse' }}>
+                <tbody>
+                  <tr><td style={{ paddingRight: '8px', verticalAlign: 'top' }}>Date</td><td style={{ verticalAlign: 'top' }}>: {meta.date}</td></tr>
+                  <tr><td style={{ paddingRight: '8px', verticalAlign: 'top' }}>Valid Until</td><td style={{ verticalAlign: 'top' }}>: {meta.validUntil}</td></tr>
+                  <tr><td style={{ paddingRight: '8px', verticalAlign: 'top' }}>Prepared by</td><td style={{ verticalAlign: 'top' }}>: {meta.preparedBy}</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -60,11 +64,13 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <div className="qp-info-card gold-top">
               <div className="qp-info-card-label">Project / Site</div>
               <div className="qp-info-card-name">{project.name}</div>
-              <p>
-                {project.address}<br />
-                Architect / ID&nbsp;: {project.architect}<br />
-                Reference No.&nbsp;: {project.refNo}
-              </p>
+              <p style={{ marginBottom: '4px' }}>{project.address}</p>
+              <table style={{ fontSize: 'inherit', color: 'inherit', borderCollapse: 'collapse', lineHeight: '1.4' }}>
+                <tbody>
+                  <tr><td style={{ paddingRight: '8px', verticalAlign: 'top' }}>Architect / ID</td><td style={{ verticalAlign: 'top' }}>: {project.architect}</td></tr>
+                  <tr><td style={{ paddingRight: '8px', verticalAlign: 'top' }}>Reference No.</td><td style={{ verticalAlign: 'top' }}>: {project.refNo}</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
