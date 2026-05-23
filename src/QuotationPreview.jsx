@@ -7,8 +7,8 @@ import award3 from './assets/awards/IDEA_25_Exhibitor.jpeg';
 import award4 from './assets/awards/IDEA_23_Exhibitor.jpeg';
 import award5 from './assets/awards/Fabricator_Certificate.png';
 import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
