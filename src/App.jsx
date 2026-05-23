@@ -327,7 +327,7 @@ function App() {
                     <div className="input-group image-upload">
                       <label>Technical Drawing / Image</label>
                       <div className="upload-box">
-                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(index, e)} />
+                        <input type="file" accept=".png, image/png, .jpg, .jpeg, image/jpeg" onChange={(e) => handleImageUpload(index, e)} />
                         {item.imageBlob && <span className="upload-success">✓ Image attached</span>}
                       </div>
                     </div>
