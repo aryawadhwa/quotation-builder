@@ -110,7 +110,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
 
         <div className="qp-footer">
           <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
-          <span className="pg-number">Page 1 / 3</span>
+          <span className="pg-number">01 / 03</span>
         </div>
       </div>
 
@@ -191,14 +191,19 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             </tbody>
           </table>
 
+          <div style={{ fontSize: '7.5pt', color: 'var(--text-soft)', marginTop: '4mm', marginBottom: '8mm' }}>
+            * <strong>AluK</strong> — globally certified European aluminium systems brand used across India.<br />
+            * <strong>dormakaba</strong> — Swiss precision hardware, one of the top 3 access & security brands worldwide.
+          </div>
+
           <div className="qp-totals-section">
             <div className="qp-bank-block">
               <h4>Bank Details</h4>
               <p>
                 Account Name &nbsp;&nbsp;&nbsp;<strong>Windal Systems Pvt. Ltd.</strong><br />
-                Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>00000000000</strong><br />
-                Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HDFC Bank, Gumti No 5</strong><br />
-                IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HDFC0000000</strong><br />
+                Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Account Number]</strong><br />
+                Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Bank Name], [Branch]</strong><br />
+                IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[IFSC Code]</strong><br />
               </p>
               <p style={{ marginTop: '2mm' }}>
                 <strong style={{ color: 'var(--gold)', fontSize: '8pt' }}>GSTIN &nbsp;</strong> 
@@ -240,8 +245,8 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
         </div>
 
         <div className="qp-footer">
-          <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
-          <span className="pg-number">Page 2 / 3</span>
+          <span>Prices are inclusive of supply & installation. GST @ 18% applicable.</span>
+          <span className="pg-number">02 / 03</span>
         </div>
       </div>
 
@@ -250,62 +255,106 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
         <div className="qp-header-compact">
           <img src={logo} alt="Windal" />
           <div className="hc-right">
-            <strong>{meta.quoteNo}</strong> &nbsp;·&nbsp; {client.name} &nbsp;·&nbsp; {project.name}
+            <strong>{meta.quoteNo}</strong> &nbsp;·&nbsp; Terms & Conditions
           </div>
         </div>
 
-        <div className="qp-body" style={{ padding: '14mm' }}>
-          <div className="qp-section-header">
-            <div className="qp-section-number">03</div>
-            <h2>Terms & Conditions</h2>
+        <div className="qp-body">
+          <div style={{ textAlign: 'center', marginTop: '4mm', marginBottom: '8mm' }}>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '20pt', fontWeight: '600', color: 'var(--navy)', margin: 0, textTransform: 'uppercase', letterSpacing: '2px' }}>Terms & Conditions</h2>
+            <p style={{ fontSize: '8.5pt', color: 'var(--text-soft)', marginTop: '2mm' }}>Please read all terms carefully. Signing or emailing approval of this document constitutes full acceptance.</p>
           </div>
 
-          <div style={{ marginTop: '8mm' }}>
-            <div style={{ marginBottom: '6mm' }}>
-              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>1. Payment Terms</h4>
-              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
-                <li><strong>50% Advance</strong> along with the formal Work Order to initiate production.</li>
-                <li><strong>40% Payment</strong> before dispatch of materials from our facility.</li>
-                <li><strong>10% Final Payment</strong> upon successful completion of installation on-site.</li>
+          <div className="qp-tc-grid">
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">01</span>
+                <h4>PRODUCT & SPECIFICATIONS</h4>
+              </div>
+              <ul>
+                <li>All specifications, colours, and hardware are final upon sign-off. Minor visual variations from showroom samples may occur due to scale.</li>
+                <li>Systems are custom-manufactured; no two units are identical.</li>
+                <li>Signed document or email approval constitutes a binding contract.</li>
               </ul>
             </div>
 
-            <div style={{ marginBottom: '6mm' }}>
-              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>2. Pricing & Validity</h4>
-              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
-                <li>This quotation is valid up to <strong>{meta.validUntil}</strong>.</li>
-                <li>The prices quoted are based on current raw material rates. Any significant market fluctuations beyond the validity period may result in a revised quote.</li>
-                <li>Final billing will be strictly as per the actual measured sizes on-site after installation. Any difference from the quoted dimensions will be adjusted on a pro-rata basis.</li>
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">02</span>
+                <h4>ORDER CONFIRMATION & PAYMENT</h4>
+              </div>
+              <ul>
+                <li>Quotation valid for 15 days from date of issue.</li>
+                <li>Orders confirmed only on receipt of advance. No cancellations or refunds post-confirmation.</li>
+                <li>Schedule: <strong>50% Advance</strong> · <strong>40% Before Dispatch</strong> · <strong>10% Post Installation</strong>.</li>
+                <li>Site must be ready within 3 months of order, else subject to price revision.</li>
               </ul>
             </div>
 
-            <div style={{ marginBottom: '6mm' }}>
-              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>3. Delivery & Installation</h4>
-              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
-                <li><strong>Delivery Time:</strong> 4 to 6 weeks from the date of final measurement, design approval, and receipt of advance payment.</li>
-                <li>Safe storage of materials at the site prior to installation shall be the sole responsibility of the client.</li>
-                <li>Civil framework (plastering, leveling, waterproofing) must be completed by the client prior to our installation team's arrival.</li>
-                <li>Scaffolding (if required for heights above 10ft) and electricity points for tools must be provided by the client free of cost.</li>
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">03</span>
+                <h4>SITE READINESS (CUSTOMER SCOPE)</h4>
+              </div>
+              <ul>
+                <li>Civil structure with plaster / POP complete. Jambs, soffits, and sills must be smooth, level, and finished.</li>
+                <li>Scaffolding, electricity, and water to be provided by the customer at site.</li>
+                <li>Aperture tapering or unevenness must be corrected prior to installation.</li>
               </ul>
             </div>
 
-            <div style={{ marginBottom: '6mm' }}>
-              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>4. Warranty & Support</h4>
-              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
-                <li>We provide a comprehensive <strong>1-Year Service Warranty</strong> covering hardware functionality and system alignment.</li>
-                <li>Warranty does not cover glass breakage, physical damage caused by third parties on-site, or damage due to natural calamities.</li>
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">04</span>
+                <h4>SURVEY & TECHNICAL REVIEW</h4>
+              </div>
+              <ul>
+                <li>Survey is scheduled only after site readiness confirmation and advance receipt.</li>
+                <li>Any post-sign-off specification change (size, colour, glass type) requires a revised quotation and may incur charges.</li>
               </ul>
             </div>
 
-            <div style={{ marginTop: '12mm', padding: '6mm', backgroundColor: 'var(--off-white)', border: '1px solid var(--rule)', borderLeft: '3px solid var(--gold)' }}>
-              <p style={{ margin: 0, fontSize: '9pt', color: 'var(--text-dark)', fontWeight: '500' }}>By releasing the advance payment, the client agrees to the terms and conditions outlined above. We look forward to successfully executing this project.</p>
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">05</span>
+                <h4>PRODUCTION & DISPATCH</h4>
+              </div>
+              <ul>
+                <li>Production commences after survey sign-off. Lead time: 45 to 60 days for standard finishes.</li>
+                <li>On delivery, material must be stored upright in a dry, protected area. Customer's responsibility.</li>
+              </ul>
+            </div>
+
+            <div className="qp-tc-card">
+              <div className="qp-tc-header">
+                <span className="tc-num">06</span>
+                <h4>INSTALLATION & WARRANTY</h4>
+              </div>
+              <ul>
+                <li>Installation scheduled once major civil and interior work is complete.</li>
+                <li>Protection tape must be removed within 30 days of installation.</li>
+                <li>Warranty on hardware and profile integrity is valid only upon quality check, signed handover, and 100% payment clearance.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="qp-signature-row">
+            <div className="qp-sig-box">
+              <strong style={{ color: 'var(--navy)' }}>Windal Systems Pvt. Ltd.</strong>
+              <div className="sig-line"></div>
+              <span>Authorised Signatory &nbsp;·&nbsp; Date: ___________</span>
+            </div>
+            <div className="qp-sig-box right">
+              <strong style={{ color: 'var(--navy)' }}>Customer Acceptance</strong>
+              <div className="sig-line"></div>
+              <span>Signature & Stamp &nbsp;·&nbsp; Date: ___________</span>
             </div>
           </div>
         </div>
 
         <div className="qp-footer">
-          <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
-          <span className="pg-number">Page 3 / 3</span>
+          <span>Windal Systems Pvt. Ltd. &nbsp;·&nbsp; 11, Gumti Gurudwara Building, GT Road, Kanpur 208012</span>
+          <span className="pg-number">03 / 03</span>
         </div>
       </div>
     </div>

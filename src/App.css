@@ -451,3 +451,80 @@ body { margin: 0; padding: 0; }
   .qp-section-header { page-break-after: avoid; }
   .qp-totals-section { page-break-inside: avoid; }
 }
+
+/* T&C Grid Layout */
+.qp-tc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6mm;
+  margin-bottom: 8mm;
+}
+
+.qp-tc-card {
+  padding: 4mm;
+  background: var(--off-white);
+  border: 1px solid var(--rule);
+}
+
+.qp-tc-header {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  margin-bottom: 3mm;
+}
+
+.tc-num {
+  font-family: var(--font-serif);
+  font-size: 11pt;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.qp-tc-header h4 {
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.qp-tc-card ul {
+  padding-left: 4mm;
+  margin: 0;
+}
+
+.qp-tc-card li {
+  font-size: 7.5pt;
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin-bottom: 2mm;
+}
+.qp-tc-card li:last-child {
+  margin-bottom: 0;
+}
+
+/* Signatures */
+.qp-signature-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15mm;
+  padding: 0 5mm;
+}
+
+.qp-sig-box {
+  width: 70mm;
+}
+.qp-sig-box.right {
+  text-align: right;
+}
+
+.sig-line {
+  height: 1px;
+  background: var(--navy);
+  margin: 12mm 0 2mm 0;
+}
+
+.qp-sig-box span {
+  font-size: 7.5pt;
+  color: var(--text-soft);
+}
