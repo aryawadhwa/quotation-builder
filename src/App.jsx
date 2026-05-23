@@ -3,6 +3,9 @@ import QuotationPreview from './QuotationPreview';
 import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy, Save, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import logo from './assets/brand_assets/LOGO - Windal.png';
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import Split from 'react-split';
+import QuotationPDFDocument from './components/QuotationPDFDocument';
 import ImageCropModal from './components/ImageCropModal';
 import './App.css';
 
@@ -292,7 +295,19 @@ function App() {
   };
 
   return (
-    <div className="quote-builder-layout">
+    <>
+    <Split 
+      className="quote-builder-layout"
+      sizes={[40, 60]} 
+      minSize={400}
+      expandToMin={false}
+      gutterSize={10}
+      gutterAlign="center"
+      snapOffset={30}
+      dragInterval={1}
+      direction="horizontal"
+      cursor="col-resize"
+    >
       {/* LEFT SIDE: FORM (Hidden when printing) */}
       <div className="quote-form-panel no-print">
         <datalist id="system-options">
@@ -351,9 +366,16 @@ function App() {
               <input type="file" accept=".windal,.json" style={{ display: 'none' }} onChange={importQuote} />
             </label>
             <button onClick={clearForm} className="clear-btn">Clear All</button>
-            <button onClick={() => window.print()} className="print-btn">
-              <Printer size={16} /> Print / PDF
-            </button>
+            <PDFDownloadLink 
+              document={<QuotationPDFDocument meta={meta} client={client} project={project} items={items} totals={totals} logoUrl={logo} />} 
+              fileName={`${meta.quoteNo || 'Quote'}.pdf`}
+              className="print-btn"
+              style={{ textDecoration: 'none' }}
+            >
+              {({ loading }) => (
+                <><Printer size={16} /> {loading ? 'Loading...' : 'Save PDF'}</>
+              )}
+            </PDFDownloadLink>
           </div>
         </div>
 
@@ -588,14 +610,18 @@ function App() {
 
       {/* RIGHT SIDE: LIVE PREVIEW */}
       <div className="quote-preview-panel">
-        <QuotationPreview 
-          meta={meta} 
-          client={client} 
-          project={project} 
-          items={items} 
-          totals={totals} 
-        />
+        <PDFViewer width="100%" height="100%" style={{ border: 'none', backgroundColor: '#525659' }}>
+          <QuotationPDFDocument 
+            meta={meta} 
+            client={client} 
+            project={project} 
+            items={items} 
+            totals={totals}
+            logoUrl={logo}
+          />
+        </PDFViewer>
       </div>
+    </Split>
 
       {cropModalData && (
         <ImageCropModal
@@ -607,7 +633,7 @@ function App() {
           onClose={() => setCropModalData(null)}
         />
       )}
-    </div>
+    </>
   );
 }
 

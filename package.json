@@ -12,12 +12,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "lucide-react": "^1.16.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-easy-crop": "^5.5.7",
     "react-pdf": "^10.4.1",
+    "react-split": "^2.0.14",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

@@ -565,3 +565,20 @@ body { margin: 0; padding: 0; }
   background: #f0f0f0;
   border-color: var(--navy);
 }
+
+/* React Split Gutter Styles */
+.gutter {
+  background-color: #94a3b8;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  cursor: col-resize;
+  transition: background-color 0.2s ease;
+}
+
+.gutter:hover {
+  background-color: #d4af37;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="30"><path d="M2 0 v30 M8 0 v30" fill="none" stroke="%23ffffff" stroke-width="2"/></svg>');
+}
