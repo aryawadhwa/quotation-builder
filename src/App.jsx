@@ -205,6 +205,18 @@ function App() {
     <div className="quote-builder-layout">
       {/* LEFT SIDE: FORM (Hidden when printing) */}
       <div className="quote-form-panel no-print">
+        <datalist id="system-options">
+          <option value="Aluminium Slim Sliding Window" />
+          <option value="Aluminium Sliding Window" />
+          <option value="Aluminium Casement Window" />
+          <option value="Aluminium Fixed Window" />
+          <option value="Aluminium Sliding Door" />
+          <option value="Aluminium Casement Door" />
+          <option value="Aluminium Folding Door" />
+          <option value="Frameless Glass Door" />
+          <option value="Shower Enclosure" />
+        </datalist>
+
         <div className="form-header">
           <h2>Windal Quote Builder</h2>
           <div className="header-actions">
@@ -316,7 +328,7 @@ function App() {
                     
                     <div className="input-group">
                       <label>System Name (e.g. Aluminium Slim Sliding)</label>
-                      <input type="text" value={item.system} onChange={e => handleItemChange(index, 'system', e.target.value)} />
+                      <input type="text" list="system-options" value={item.system} onChange={e => handleItemChange(index, 'system', e.target.value)} />
                     </div>
                     <div className="input-group">
                       <label>System Type (e.g. 3 Track · 2 Glass)</label>
