@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl }) => {
+const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, qrCodeUrl }) => {
   const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
   const discountAmount = totals.discountType === '%' 
     ? (subtotal * (parseFloat(totals.discount) || 0)) / 100 
@@ -557,26 +557,36 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl })
           {/* Bank Details */}
           <View style={styles.bankBox}>
             <Text style={styles.bankHeader}>Bank Details</Text>
-            <View style={styles.bankRow}>
-              <Text style={styles.bankLabel}>Account Name</Text>
-              <Text style={styles.bankValue}>WADHWA ENTERPRISES</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Account Name</Text>
+                  <Text style={styles.bankValue}>WADHWA ENTERPRISES</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Account No.</Text>
+                  <Text style={styles.bankValue}>09410400008722</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Bank</Text>
+                  <Text style={styles.bankValue}>Bank of Baroda, Sisamau, Kanpur</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>IFSC Code</Text>
+                  <Text style={styles.bankValue}>BARB0SISAMA</Text>
+                </View>
+                <Text style={{ marginTop: 10, fontSize: 8 }}>
+                  <Text style={{ color: BLUE, fontFamily: 'Helvetica-Bold' }}>GSTIN  </Text>
+                  <Text style={{ fontFamily: 'Helvetica-Bold' }}>09AABPW2030P1ZD</Text>
+                </Text>
+              </View>
+              {qrCodeUrl && (
+                <View style={{ marginLeft: 15, justifyContent: 'center', alignItems: 'center' }}>
+                  <Image src={qrCodeUrl} style={{ width: 55, height: 55 }} />
+                  <Text style={{ fontSize: 5, color: TEXT_SOFT, marginTop: 4 }}>SCAN TO PAY</Text>
+                </View>
+              )}
             </View>
-            <View style={styles.bankRow}>
-              <Text style={styles.bankLabel}>Account No.</Text>
-              <Text style={styles.bankValue}>09410400008722</Text>
-            </View>
-            <View style={styles.bankRow}>
-              <Text style={styles.bankLabel}>Bank</Text>
-              <Text style={styles.bankValue}>Bank of Baroda, Sisamau, Kanpur</Text>
-            </View>
-            <View style={styles.bankRow}>
-              <Text style={styles.bankLabel}>IFSC Code</Text>
-              <Text style={styles.bankValue}>BARB0SISAMA</Text>
-            </View>
-            <Text style={{ marginTop: 10, fontSize: 8 }}>
-              <Text style={{ color: BLUE, fontFamily: 'Helvetica-Bold' }}>GSTIN  </Text>
-              <Text style={{ fontFamily: 'Helvetica-Bold' }}>09AABPW2030P1ZD</Text>
-            </Text>
           </View>
 
           {/* Totals */}

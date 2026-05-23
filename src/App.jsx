@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
 import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy, Save, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import logo from './assets/brand_assets/LOGO - Windal.png';
+import logo from './assets/brand_assets/LOGO - Windal.jpg';
+import QRCode from 'qrcode';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import Split from 'react-split';
 import QuotationPDFDocument from './components/QuotationPDFDocument';
@@ -30,70 +31,74 @@ function useStickyState(defaultValue, key) {
 
 function App() {
   const [cropModalData, setCropModalData] = useState(null);
-  const [jpegLogo, setJpegLogo] = useState(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState(null);
 
   useEffect(() => {
-    const img = new window.Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      setJpegLogo(canvas.toDataURL('image/jpeg', 1.0));
-    };
-    img.src = logo;
+    // Generate UPI QR Code
+    const upiString = 'upi://pay?pa=09410400008722@barodampay&pn=WADHWA%20ENTERPRISES';
+    QRCode.toDataURL(upiString, { width: 300, margin: 1, color: { dark: '#1e293b', light: '#ffffff' } })
+      .then(url => setQrCodeUrl(url))
+      .catch(err => console.error(err));
   }, []);
 
   const [meta, setMeta] = useStickyState({
     quoteNo: 'WIN-QT-2026-001',
-    date: '15 March 2026',
-    validUntil: '30 March 2026',
+    date: new Date().toLocaleDateString('en-IN'),
+    validUntil: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN'),
     preparedBy: 'Samir Wadhwa'
-  }, 'windal-meta');
+  }, 'windal_meta');
 
   const [client, setClient] = useStickyState({
     name: 'Ajay Verma',
     address: 'IIM Road',
     city: 'Lucknow, Uttar Pradesh — 226013',
     contact: '+91 98765 43210  ·  ajay@example.com'
-  }, 'windal-client');
+  }, 'windal_client');
 
   const [project, setProject] = useStickyState({
     name: 'Verma Residence',
     address: 'Plot 42, IIM Road',
     architect: 'Design Studio',
     refNo: 'DS-2026-11'
-  }, 'windal-project');
+  }, 'windal_project');
 
   const [items, setItems] = useStickyState([
     {
-      id: 1,
+      id: Date.now(),
       code: 'W-01',
       system: 'Aluminium Slim Sliding Window',
-      type: '3 Track · 2 Glass + 1 SS Mesh · All Sliding',
-      dimension: 'W 2743 mm × H 1676 mm',
-      width: 2743,
-      height: 1676,
+      type: '3 Track - 2 Glass + 1 SS Mesh · All Sliding',
+      dimension: 'W 2743 mm x H 1676 mm',
+      width: '2743',
+      height: '1676',
       area: '49.48',
       location: 'Master Bedroom',
       glazing: '8 mm Clear Toughened Glass',
-      profile: 'AluK · Powder Coat · Graphite Grey',
-      hardware: 'Single Point Flush Handle (Black)',
-      track: '3.5 Bottom Track 120.1 mm × 45 mm',
-      qty: 1,
-      rate: 2419,
+      profile: 'AluK · Powder Coat . Graphite Grey',
+      hardware: 'dormakaba Single Point Flush Handle (Black)',
+      track: '',
+      qty: 2,
+      rate: 1210,
       imageBlob: null
     }
-  ], 'windal-items');
+  ], 'windal_items');
 
   const [totals, setTotals] = useStickyState({
+    discountType: 'amount',
     discount: 0,
     logistics: 10000,
     installation: 12500
-  }, 'windal-totals');
+  }, 'windal_totals');
+
+  // DEBOUNCE PDF RENDERING TO FIX TYPING LAG
+  const [debouncedData, setDebouncedData] = useState({ meta, client, project, items, totals });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedData({ meta, client, project, items, totals });
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [meta, client, project, items, totals]);
 
   const [templates, setTemplates] = useStickyState([], 'windal-templates');
 
@@ -383,7 +388,7 @@ function App() {
             </label>
             <button onClick={clearForm} className="clear-btn">Clear All</button>
             <PDFDownloadLink 
-              document={<QuotationPDFDocument meta={meta} client={client} project={project} items={items} totals={totals} logoUrl={jpegLogo || logo} />} 
+              document={<QuotationPDFDocument meta={debouncedData.meta} client={debouncedData.client} project={debouncedData.project} items={debouncedData.items} totals={debouncedData.totals} logoUrl={logo} qrCodeUrl={qrCodeUrl} />} 
               fileName={`${meta.quoteNo || 'Quote'}.pdf`}
               className="print-btn"
               style={{ textDecoration: 'none' }}
@@ -628,12 +633,13 @@ function App() {
       <div className="quote-preview-panel">
         <PDFViewer width="100%" height="100%" style={{ border: 'none', backgroundColor: '#525659' }}>
           <QuotationPDFDocument 
-            meta={meta} 
-            client={client} 
-            project={project} 
-            items={items} 
-            totals={totals}
-            logoUrl={jpegLogo || logo}
+            meta={debouncedData.meta} 
+            client={debouncedData.client} 
+            project={debouncedData.project} 
+            items={debouncedData.items} 
+            totals={debouncedData.totals}
+            logoUrl={logo}
+            qrCodeUrl={qrCodeUrl}
           />
         </PDFViewer>
       </div>
