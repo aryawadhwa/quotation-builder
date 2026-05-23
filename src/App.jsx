@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QuotationPreview from './QuotationPreview';
-import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload } from 'lucide-react';
+import { Plus, Trash2, Printer, ChevronDown, ChevronUp, Download, Upload, Copy } from 'lucide-react';
 import './App.css';
 
 function useStickyState(defaultValue, key) {
@@ -148,8 +148,27 @@ function App() {
   };
 
   const removeItem = (index) => {
-    const newItems = items.filter((_, i) => i !== index);
+    if(window.confirm("Delete this line item?")) {
+      const newItems = items.filter((_, i) => i !== index);
+      setItems(newItems);
+      const newExpanded = { ...expandedItems };
+      delete newExpanded[index];
+      setExpandedItems(newExpanded);
+    }
+  };
+
+  const duplicateItem = (index) => {
+    const itemToCopy = items[index];
+    const newItem = { 
+      ...itemToCopy, 
+      id: Date.now(), 
+      code: `${itemToCopy.code || 'Item'} (Copy)` 
+    };
+    const newItems = [...items];
+    newItems.splice(index + 1, 0, newItem);
     setItems(newItems);
+    
+    setExpandedItems(prev => ({ ...prev, [newItems.length - 1]: true }));
   };
 
   const clearForm = () => {
@@ -217,6 +236,31 @@ function App() {
           <option value="3.5 Track Bottom" />
           <option value="Slim Outer Frame" />
           <option value="Concealed Frame" />
+        </datalist>
+
+        <datalist id="glazing-options">
+          <option value="6mm Clear Toughened" />
+          <option value="8mm Clear Toughened" />
+          <option value="10mm Clear Toughened" />
+          <option value="12mm Clear Toughened" />
+          <option value="6mm Tinted Toughened" />
+          <option value="8mm Tinted Toughened" />
+          <option value="5mm + 1.52 PVB + 5mm Laminated" />
+          <option value="DGU (5mm + 12mm Air + 5mm)" />
+        </datalist>
+
+        <datalist id="color-options">
+          <option value="Matte Black" />
+          <option value="Champagne Anodized" />
+          <option value="Silver Anodized" />
+          <option value="Wood Finish" />
+          <option value="White Powder Coated" />
+        </datalist>
+
+        <datalist id="hardware-options">
+          <option value="Standard Windal" />
+          <option value="Premium Cmech" />
+          <option value="Premium Giesse" />
         </datalist>
 
         <div className="form-header">
@@ -316,7 +360,10 @@ function App() {
                     {expandedItems[index] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     <h4 style={{ margin: 0 }}>{item.code || `Item ${index + 1}`} - {item.system || "New Item"}</h4>
                   </div>
-                  <button onClick={(e) => { e.stopPropagation(); removeItem(index); }} className="del-btn" title="Delete Item"><Trash2 size={14}/></button>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button onClick={(e) => { e.stopPropagation(); duplicateItem(index); }} className="del-btn" style={{ color: '#3b82f6', background: '#eff6ff', padding: '6px', borderRadius: '4px' }} title="Duplicate Item"><Copy size={14}/></button>
+                    <button onClick={(e) => { e.stopPropagation(); removeItem(index); }} className="del-btn" style={{ padding: '6px', borderRadius: '4px' }} title="Delete Item"><Trash2 size={14}/></button>
+                  </div>
                 </div>
                 
                 {expandedItems[index] && (
@@ -374,15 +421,15 @@ function App() {
 
                     <div className="input-group">
                       <label>Glazing</label>
-                      <input type="text" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} />
+                      <input type="text" list="glazing-options" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} />
                     </div>
                     <div className="input-group">
-                      <label>Profile</label>
-                      <input type="text" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} />
+                      <label>Profile Color</label>
+                      <input type="text" list="color-options" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} />
                     </div>
                     <div className="input-group">
                       <label>Hardware</label>
-                      <input type="text" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} />
+                      <input type="text" list="hardware-options" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} />
                     </div>
                     <div className="input-group">
                       <label>Track / Frame Details</label>
