@@ -26,7 +26,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
               <div className="tagline">Premium Architectural Glass & Aluminium Systems</div>
             </div>
             <div className="qp-header-contact">
-              <span>Windal Systems Pvt. Ltd.</span>
+              <span>Wadhwa Enterprises</span>
               11, Gumti Gurudwara Building, GT Road<br />
               Kanpur — 208012, Uttar Pradesh<br />
               +91 98390 36334 &nbsp;·&nbsp; samir.w@windal.in<br />
@@ -78,7 +78,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <p>Every system we supply is custom-fabricated to your exact openings using <strong>AluK aluminium profiles</strong> and <strong>dormakaba hardware</strong> — both globally certified European brands used in landmark residential and commercial projects across India. Our systems are built and tested for thermal comfort, sound control, wind resistance, and long-term structural strength.</p>
             <p>We are confident the solution below will enhance both the beauty and functionality of your space for decades to come. Our team is available at every step — from survey to installation and beyond.</p>
             <p style={{ marginTop: '3mm', fontStyle: 'italic', color: 'var(--text-soft)' }}>We value this opportunity and look forward to a long-standing association with you.</p>
-            <p style={{ marginTop: '3mm' }}>Warm regards,<br /><strong style={{ color: 'var(--navy)' }}>Samir Wadhwa</strong><br /><span style={{ fontSize: '8pt', color: 'var(--text-soft)' }}>Director, Windal Systems Pvt. Ltd.</span></p>
+            <p style={{ marginTop: '3mm' }}>Warm regards,<br /><strong style={{ color: 'var(--navy)' }}>Samir Wadhwa</strong><br /><span style={{ fontSize: '8pt', color: 'var(--text-soft)' }}>Director, Wadhwa Enterprises</span></p>
           </div>
 
           <div className="qp-awards-strip">
@@ -200,7 +200,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <div className="qp-bank-block">
               <h4>Bank Details</h4>
               <p>
-                Account Name &nbsp;&nbsp;&nbsp;<strong>Windal Systems Pvt. Ltd.</strong><br />
+                Account Name &nbsp;&nbsp;&nbsp;<strong>Wadhwa Enterprises</strong><br />
                 Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Account Number]</strong><br />
                 Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Bank Name], [Branch]</strong><br />
                 IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[IFSC Code]</strong><br />
@@ -340,7 +340,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
 
           <div className="qp-signature-row">
             <div className="qp-sig-box">
-              <strong style={{ color: 'var(--navy)' }}>Windal Systems Pvt. Ltd.</strong>
+              <strong style={{ color: 'var(--navy)' }}>Wadhwa Enterprises</strong>
               <div className="sig-line"></div>
               <span>Authorised Signatory &nbsp;·&nbsp; Date: ___________</span>
             </div>
@@ -353,7 +353,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
         </div>
 
         <div className="qp-footer">
-          <span>Windal Systems Pvt. Ltd. &nbsp;·&nbsp; 11, Gumti Gurudwara Building, GT Road, Kanpur 208012</span>
+          <span>Wadhwa Enterprises &nbsp;·&nbsp; 11, Gumti Gurudwara Building, GT Road, Kanpur 208012</span>
           <span className="pg-number">03 / 03</span>
         </div>
       </div>
