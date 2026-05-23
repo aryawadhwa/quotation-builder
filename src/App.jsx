@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import QuotationPreview from './QuotationPreview';
-import { Plus, Trash2, Printer } from 'lucide-react';
+import { Plus, Trash2, Printer, ChevronDown, ChevronUp } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
       system: 'Aluminium Slim Sliding Window',
       type: '3 Track · 2 Glass + 1 SS Mesh · All Sliding',
       dimension: 'W 2743 mm × H 1676 mm',
-      area: '49.48 Sq.ft.',
+      area: '49.48',
       location: 'Master Bedroom',
       glazing: '8 mm Clear Toughened Glass',
       profile: 'AluK · Powder Coat · Graphite Grey',
@@ -50,6 +50,13 @@ function App() {
     installation: 12500
   });
 
+  // State to manage collapsed items
+  const [expandedItems, setExpandedItems] = useState({ 0: true });
+
+  const toggleItem = (index) => {
+    setExpandedItems(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
@@ -65,27 +72,39 @@ function App() {
   };
 
   const addItem = () => {
+    const newIndex = items.length;
     setItems([...items, {
       id: Date.now(),
-      code: `W-0${items.length + 1}`,
-      system: 'New System',
-      type: 'Description',
-      dimension: 'W 0 mm × H 0 mm',
-      area: '0 Sq.ft.',
-      location: 'Room',
-      glazing: '8 mm Glass',
-      profile: 'AluK',
-      hardware: 'dormakaba',
-      track: 'Standard',
+      code: `W-0${newIndex + 1}`,
+      system: '',
+      type: '',
+      dimension: '',
+      area: '',
+      location: '',
+      glazing: '',
+      profile: '',
+      hardware: '',
+      track: '',
       qty: 1,
       rate: 0,
       imageBlob: null
     }]);
+    setExpandedItems(prev => ({ ...prev, [newIndex]: true }));
   };
 
   const removeItem = (index) => {
     const newItems = items.filter((_, i) => i !== index);
     setItems(newItems);
+  };
+
+  const clearForm = () => {
+    if(window.confirm("Are you sure you want to clear all fields?")) {
+      setMeta({ quoteNo: '', date: '', validUntil: '', preparedBy: '' });
+      setClient({ name: '', address: '', city: '', contact: '' });
+      setProject({ name: '', address: '', architect: '', refNo: '' });
+      setItems([]);
+      setTotals({ discount: 0, logistics: 0, installation: 0 });
+    }
   };
 
   return (
@@ -94,80 +113,186 @@ function App() {
       <div className="quote-form-panel no-print">
         <div className="form-header">
           <h2>Windal Quote Builder</h2>
-          <button onClick={() => window.print()} className="print-btn">
-            <Printer size={16} /> Save to PDF
-          </button>
+          <div className="header-actions">
+            <button onClick={clearForm} className="clear-btn">Clear All</button>
+            <button onClick={() => window.print()} className="print-btn">
+              <Printer size={16} /> Print / PDF
+            </button>
+          </div>
         </div>
 
         <div className="form-scroll-area">
-          <section className="form-section">
-            <h3>Metadata</h3>
-            <input type="text" value={meta.quoteNo} onChange={e => setMeta({...meta, quoteNo: e.target.value})} placeholder="Quote No" />
-            <input type="text" value={meta.date} onChange={e => setMeta({...meta, date: e.target.value})} placeholder="Date" />
-            <input type="text" value={meta.validUntil} onChange={e => setMeta({...meta, validUntil: e.target.value})} placeholder="Valid Until" />
-            <input type="text" value={meta.preparedBy} onChange={e => setMeta({...meta, preparedBy: e.target.value})} placeholder="Prepared By" />
+          
+          <section className="form-card">
+            <h3>Document Details</h3>
+            <div className="grid-2">
+              <div className="input-group">
+                <label>Quote No.</label>
+                <input type="text" value={meta.quoteNo} onChange={e => setMeta({...meta, quoteNo: e.target.value})} />
+              </div>
+              <div className="input-group">
+                <label>Date</label>
+                <input type="text" value={meta.date} onChange={e => setMeta({...meta, date: e.target.value})} />
+              </div>
+              <div className="input-group">
+                <label>Valid Until</label>
+                <input type="text" value={meta.validUntil} onChange={e => setMeta({...meta, validUntil: e.target.value})} />
+              </div>
+              <div className="input-group">
+                <label>Prepared By</label>
+                <input type="text" value={meta.preparedBy} onChange={e => setMeta({...meta, preparedBy: e.target.value})} />
+              </div>
+            </div>
           </section>
 
-          <section className="form-section">
+          <section className="form-card">
             <h3>Client Details</h3>
-            <input type="text" value={client.name} onChange={e => setClient({...client, name: e.target.value})} placeholder="Client Name" />
-            <input type="text" value={client.address} onChange={e => setClient({...client, address: e.target.value})} placeholder="Address Line 1" />
-            <input type="text" value={client.city} onChange={e => setClient({...client, city: e.target.value})} placeholder="City, State PIN" />
-            <input type="text" value={client.contact} onChange={e => setClient({...client, contact: e.target.value})} placeholder="Phone · Email" />
+            <div className="input-group">
+              <label>Client Name</label>
+              <input type="text" value={client.name} onChange={e => setClient({...client, name: e.target.value})} />
+            </div>
+            <div className="input-group">
+              <label>Address Line 1</label>
+              <input type="text" value={client.address} onChange={e => setClient({...client, address: e.target.value})} />
+            </div>
+            <div className="input-group">
+              <label>City, State, PIN</label>
+              <input type="text" value={client.city} onChange={e => setClient({...client, city: e.target.value})} />
+            </div>
+            <div className="input-group">
+              <label>Phone / Email</label>
+              <input type="text" value={client.contact} onChange={e => setClient({...client, contact: e.target.value})} />
+            </div>
           </section>
 
-          <section className="form-section">
+          <section className="form-card">
             <h3>Project Details</h3>
-            <input type="text" value={project.name} onChange={e => setProject({...project, name: e.target.value})} placeholder="Project Name" />
-            <input type="text" value={project.address} onChange={e => setProject({...project, address: e.target.value})} placeholder="Site Address" />
-            <input type="text" value={project.architect} onChange={e => setProject({...project, architect: e.target.value})} placeholder="Architect" />
-            <input type="text" value={project.refNo} onChange={e => setProject({...project, refNo: e.target.value})} placeholder="Ref No" />
+            <div className="input-group">
+              <label>Project Name</label>
+              <input type="text" value={project.name} onChange={e => setProject({...project, name: e.target.value})} />
+            </div>
+            <div className="input-group">
+              <label>Site Address</label>
+              <input type="text" value={project.address} onChange={e => setProject({...project, address: e.target.value})} />
+            </div>
+            <div className="grid-2">
+              <div className="input-group">
+                <label>Architect / ID</label>
+                <input type="text" value={project.architect} onChange={e => setProject({...project, architect: e.target.value})} />
+              </div>
+              <div className="input-group">
+                <label>Reference No.</label>
+                <input type="text" value={project.refNo} onChange={e => setProject({...project, refNo: e.target.value})} />
+              </div>
+            </div>
           </section>
 
-          <section className="form-section">
-            <h3>Line Items</h3>
+          <section className="form-card items-section">
+            <h3 style={{ borderBottom: 'none', marginBottom: 0 }}>Line Items</h3>
+            
             {items.map((item, index) => (
-              <div key={item.id} className="item-card">
-                <div className="item-card-header">
-                  <h4>Item {index + 1} ({item.code})</h4>
-                  <button onClick={() => removeItem(index)} className="del-btn"><Trash2 size={14}/></button>
+              <div key={item.id} className={`item-card ${expandedItems[index] ? 'expanded' : 'collapsed'}`}>
+                <div className="item-card-header" onClick={() => toggleItem(index)}>
+                  <div className="item-title-bar">
+                    {expandedItems[index] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    <h4 style={{ margin: 0 }}>{item.code || `Item ${index + 1}`} - {item.system || "New Item"}</h4>
+                  </div>
+                  <button onClick={(e) => { e.stopPropagation(); removeItem(index); }} className="del-btn" title="Delete Item"><Trash2 size={14}/></button>
                 </div>
                 
-                <input type="text" value={item.code} onChange={e => handleItemChange(index, 'code', e.target.value)} placeholder="Code (e.g. W-01)" />
-                <input type="text" value={item.system} onChange={e => handleItemChange(index, 'system', e.target.value)} placeholder="System Name" />
-                <input type="text" value={item.type} onChange={e => handleItemChange(index, 'type', e.target.value)} placeholder="System Type" />
-                
-                <div className="grid-2">
-                  <input type="text" value={item.dimension} onChange={e => handleItemChange(index, 'dimension', e.target.value)} placeholder="Dimension" />
-                  <input type="text" value={item.area} onChange={e => handleItemChange(index, 'area', e.target.value)} placeholder="Area (Sq.ft)" />
-                  <input type="number" value={item.qty} onChange={e => handleItemChange(index, 'qty', parseInt(e.target.value)||0)} placeholder="Qty" />
-                  <input type="number" value={item.rate} onChange={e => handleItemChange(index, 'rate', parseFloat(e.target.value)||0)} placeholder="Rate per Sq.ft" />
-                </div>
-                
-                <input type="text" value={item.location} onChange={e => handleItemChange(index, 'location', e.target.value)} placeholder="Location" />
-                <input type="text" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} placeholder="Glazing" />
-                <input type="text" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} placeholder="Profile" />
-                <input type="text" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} placeholder="Hardware" />
-                <input type="text" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} placeholder="Track Details" />
-                
-                <div className="image-upload">
-                  <label>Technical Drawing / Image:</label>
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(index, e)} />
-                </div>
+                {expandedItems[index] && (
+                  <div className="item-card-body">
+                    <div className="grid-2">
+                      <div className="input-group">
+                        <label>Item Code (e.g. W-01)</label>
+                        <input type="text" value={item.code} onChange={e => handleItemChange(index, 'code', e.target.value)} />
+                      </div>
+                      <div className="input-group">
+                        <label>Location (e.g. Master Bed)</label>
+                        <input type="text" value={item.location} onChange={e => handleItemChange(index, 'location', e.target.value)} />
+                      </div>
+                    </div>
+                    
+                    <div className="input-group">
+                      <label>System Name (e.g. Aluminium Slim Sliding)</label>
+                      <input type="text" value={item.system} onChange={e => handleItemChange(index, 'system', e.target.value)} />
+                    </div>
+                    <div className="input-group">
+                      <label>System Type (e.g. 3 Track · 2 Glass)</label>
+                      <input type="text" value={item.type} onChange={e => handleItemChange(index, 'type', e.target.value)} />
+                    </div>
+                    
+                    <div className="grid-2">
+                      <div className="input-group">
+                        <label>Dimensions (W × H)</label>
+                        <input type="text" value={item.dimension} onChange={e => handleItemChange(index, 'dimension', e.target.value)} placeholder="W 1000 mm × H 1000 mm"/>
+                      </div>
+                      <div className="input-group">
+                        <label>Total Area (Sq.ft)</label>
+                        <input type="number" step="0.01" value={item.area} onChange={e => handleItemChange(index, 'area', e.target.value)} />
+                      </div>
+                    </div>
+
+                    <div className="grid-2">
+                      <div className="input-group">
+                        <label>Quantity</label>
+                        <input type="number" value={item.qty} onChange={e => handleItemChange(index, 'qty', parseInt(e.target.value)||0)} />
+                      </div>
+                      <div className="input-group">
+                        <label>Rate per Sq.ft (₹)</label>
+                        <input type="number" value={item.rate} onChange={e => handleItemChange(index, 'rate', parseFloat(e.target.value)||0)} />
+                      </div>
+                    </div>
+                    
+                    <div className="form-divider">Specifications</div>
+
+                    <div className="input-group">
+                      <label>Glazing</label>
+                      <input type="text" value={item.glazing} onChange={e => handleItemChange(index, 'glazing', e.target.value)} />
+                    </div>
+                    <div className="input-group">
+                      <label>Profile</label>
+                      <input type="text" value={item.profile} onChange={e => handleItemChange(index, 'profile', e.target.value)} />
+                    </div>
+                    <div className="input-group">
+                      <label>Hardware</label>
+                      <input type="text" value={item.hardware} onChange={e => handleItemChange(index, 'hardware', e.target.value)} />
+                    </div>
+                    <div className="input-group">
+                      <label>Track / Frame Details</label>
+                      <input type="text" value={item.track} onChange={e => handleItemChange(index, 'track', e.target.value)} />
+                    </div>
+                    
+                    <div className="input-group image-upload">
+                      <label>Technical Drawing / Image</label>
+                      <div className="upload-box">
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(index, e)} />
+                        {item.imageBlob && <span className="upload-success">✓ Image attached</span>}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
-            <button onClick={addItem} className="add-btn"><Plus size={16}/> Add Item</button>
+            
+            <button onClick={addItem} className="add-btn"><Plus size={16}/> Add New Line Item</button>
           </section>
 
-          <section className="form-section">
-            <h3>Additional Costs</h3>
-            <div className="grid-2">
-              <label>Discount</label>
-              <input type="number" value={totals.discount} onChange={e => setTotals({...totals, discount: parseFloat(e.target.value)||0})} />
-              <label>Logistics</label>
-              <input type="number" value={totals.logistics} onChange={e => setTotals({...totals, logistics: parseFloat(e.target.value)||0})} />
-              <label>Installation</label>
-              <input type="number" value={totals.installation} onChange={e => setTotals({...totals, installation: parseFloat(e.target.value)||0})} />
+          <section className="form-card">
+            <h3>Pricing & Totals</h3>
+            <div className="grid-3">
+              <div className="input-group">
+                <label>Discount (₹)</label>
+                <input type="number" value={totals.discount} onChange={e => setTotals({...totals, discount: parseFloat(e.target.value)||0})} />
+              </div>
+              <div className="input-group">
+                <label>Logistics (₹)</label>
+                <input type="number" value={totals.logistics} onChange={e => setTotals({...totals, logistics: parseFloat(e.target.value)||0})} />
+              </div>
+              <div className="input-group">
+                <label>Installation (₹)</label>
+                <input type="number" value={totals.installation} onChange={e => setTotals({...totals, installation: parseFloat(e.target.value)||0})} />
+              </div>
             </div>
           </section>
         </div>

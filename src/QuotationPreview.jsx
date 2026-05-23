@@ -1,4 +1,9 @@
 import React from 'react';
+import logo from './assets/brand_assets/LOGO - Windal.png';
+import award1 from './assets/awards/IIID_Best_Stall_Design_Award_2023.jpeg';
+import award2 from './assets/awards/IDEA_24_Trophy.jpeg';
+import award3 from './assets/awards/IDEA_25_Exhibitor.jpeg';
+import award4 from './assets/awards/IDEA_23_Exhibitor.jpeg';
 
 const QuotationPreview = ({ meta, client, project, items, totals }) => {
   const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
@@ -17,7 +22,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
         <div className="qp-header">
           <div className="qp-header-top">
             <div className="qp-header-logo">
-              <img src="/brand_assets/LOGO - Windal.png" alt="Windal" />
+              <img src={logo} alt="Windal" />
               <div className="tagline">Premium Architectural Glass & Aluminium Systems</div>
             </div>
             <div className="qp-header-contact">
@@ -80,22 +85,22 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
             <div className="qp-awards-strip-label">Recognition</div>
             <div className="qp-awards-row">
               <div className="qp-award-card">
-                <img src="/awards/IIID_Best_Stall_Design_Award_2023.jpeg" alt="Best Stall Design" />
+                <img src={award1} alt="Best Stall Design" />
                 <div className="qp-award-card-name">Best Stall Award</div>
                 <div className="qp-award-card-sub">IDCS · IIID 2023</div>
               </div>
               <div className="qp-award-card">
-                <img src="/awards/IDEA_24_Trophy.jpeg" alt="Exhibitor Trophy" />
+                <img src={award2} alt="Exhibitor Trophy" />
                 <div className="qp-award-card-name">Exhibitor<br />Trophy</div>
                 <div className="qp-award-card-sub">IDEA '24 · KAA</div>
               </div>
               <div className="qp-award-card">
-                <img src="/awards/IDEA_25_Exhibitor.jpeg" alt="IDEA 25" />
+                <img src={award3} alt="IDEA 25" />
                 <div className="qp-award-card-name">Best Stall Design<br />Award</div>
                 <div className="qp-award-card-sub">IDEA '25 · KAA</div>
               </div>
               <div className="qp-award-card">
-                <img src="/awards/IDEA_23_Exhibitor.jpeg" alt="IDEA 23" />
+                <img src={award4} alt="IDEA 23" />
                 <div className="qp-award-card-name">Exhibitor<br />Trophy</div>
                 <div className="qp-award-card-sub">IDEA '23 · KAA</div>
               </div>
@@ -105,14 +110,14 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
 
         <div className="qp-footer">
           <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
-          <span className="pg-number">01 / 03</span>
+          <span className="pg-number">Page 1 / 3</span>
         </div>
       </div>
 
       {/* ════ PAGE 2 ════ */}
       <div className="qp-page">
         <div className="qp-header-compact">
-          <img src="/brand_assets/LOGO - Windal.png" alt="Windal" />
+          <img src={logo} alt="Windal" />
           <div className="hc-right">
             <strong>{meta.quoteNo}</strong> &nbsp;·&nbsp; {client.name} &nbsp;·&nbsp; {project.name}
           </div>
@@ -191,9 +196,9 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
               <h4>Bank Details</h4>
               <p>
                 Account Name &nbsp;&nbsp;&nbsp;<strong>Windal Systems Pvt. Ltd.</strong><br />
-                Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Account Number]</strong><br />
-                Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Bank Name], [Branch]</strong><br />
-                IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[IFSC Code]</strong><br />
+                Account No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>00000000000</strong><br />
+                Bank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HDFC Bank, Gumti No 5</strong><br />
+                IFSC Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HDFC0000000</strong><br />
               </p>
               <p style={{ marginTop: '2mm' }}>
                 <strong style={{ color: 'var(--gold)', fontSize: '8pt' }}>GSTIN &nbsp;</strong> 
@@ -208,7 +213,7 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
               </div>
               <div className="qp-totals-row">
                 <span className="t-label">Discount</span>
-                <span className="t-value">- {formatCurrency(totals.discount)}</span>
+                <span className="t-value" style={{color: '#e53e3e'}}>- {formatCurrency(totals.discount)}</span>
               </div>
               <div className="qp-totals-row">
                 <span className="t-label">Logistics</span>
@@ -235,11 +240,74 @@ const QuotationPreview = ({ meta, client, project, items, totals }) => {
         </div>
 
         <div className="qp-footer">
-          <span>Prices are inclusive of supply & installation. GST @ 18% applicable.</span>
-          <span className="pg-number">02 / 03</span>
+          <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
+          <span className="pg-number">Page 2 / 3</span>
         </div>
       </div>
 
+      {/* ════ PAGE 3: Terms & Conditions ════ */}
+      <div className="qp-page">
+        <div className="qp-header-compact">
+          <img src={logo} alt="Windal" />
+          <div className="hc-right">
+            <strong>{meta.quoteNo}</strong> &nbsp;·&nbsp; {client.name} &nbsp;·&nbsp; {project.name}
+          </div>
+        </div>
+
+        <div className="qp-body" style={{ padding: '14mm' }}>
+          <div className="qp-section-header">
+            <div className="qp-section-number">03</div>
+            <h2>Terms & Conditions</h2>
+          </div>
+
+          <div style={{ marginTop: '8mm' }}>
+            <div style={{ marginBottom: '6mm' }}>
+              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>1. Payment Terms</h4>
+              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
+                <li><strong>50% Advance</strong> along with the formal Work Order to initiate production.</li>
+                <li><strong>40% Payment</strong> before dispatch of materials from our facility.</li>
+                <li><strong>10% Final Payment</strong> upon successful completion of installation on-site.</li>
+              </ul>
+            </div>
+
+            <div style={{ marginBottom: '6mm' }}>
+              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>2. Pricing & Validity</h4>
+              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
+                <li>This quotation is valid up to <strong>{meta.validUntil}</strong>.</li>
+                <li>The prices quoted are based on current raw material rates. Any significant market fluctuations beyond the validity period may result in a revised quote.</li>
+                <li>Final billing will be strictly as per the actual measured sizes on-site after installation. Any difference from the quoted dimensions will be adjusted on a pro-rata basis.</li>
+              </ul>
+            </div>
+
+            <div style={{ marginBottom: '6mm' }}>
+              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>3. Delivery & Installation</h4>
+              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
+                <li><strong>Delivery Time:</strong> 4 to 6 weeks from the date of final measurement, design approval, and receipt of advance payment.</li>
+                <li>Safe storage of materials at the site prior to installation shall be the sole responsibility of the client.</li>
+                <li>Civil framework (plastering, leveling, waterproofing) must be completed by the client prior to our installation team's arrival.</li>
+                <li>Scaffolding (if required for heights above 10ft) and electricity points for tools must be provided by the client free of cost.</li>
+              </ul>
+            </div>
+
+            <div style={{ marginBottom: '6mm' }}>
+              <h4 style={{ color: 'var(--navy)', fontFamily: 'var(--font-serif)', fontSize: '13pt', marginBottom: '2mm', fontWeight: '700' }}>4. Warranty & Support</h4>
+              <ul style={{ paddingLeft: '5mm', fontSize: '9pt', color: 'var(--text-mid)', lineHeight: '1.8' }}>
+                <li>We provide a comprehensive <strong>1-Year Service Warranty</strong> covering hardware functionality and system alignment.</li>
+                <li>Warranty does not cover glass breakage, physical damage caused by third parties on-site, or damage due to natural calamities.</li>
+              </ul>
+            </div>
+
+            <div style={{ marginTop: '12mm', padding: '6mm', backgroundColor: 'var(--off-white)', border: '1px solid var(--rule)', borderLeft: '3px solid var(--gold)' }}>
+              <p style={{ margin: 0, fontSize: '9pt', color: 'var(--text-dark)', fontWeight: '500' }}>By releasing the advance payment, the client agrees to the terms and conditions outlined above. We look forward to successfully executing this project.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="qp-footer">
+          <span>windal.in &nbsp;·&nbsp; samir.w@windal.in &nbsp;·&nbsp; +91 98390 36334</span>
+          <span className="pg-number">Page 3 / 3</span>
+        </div>
+      </div>
     </div>
   );
 };
