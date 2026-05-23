@@ -1,16 +1,67 @@
-# React + Vite
+# Windal Quote Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Internal tool for **Wadhwa Enterprises / Windal** to create branded architectural glass and aluminium quotations with a live PDF preview and export.
 
-Currently, two official plugins are available:
+## Quick start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Open the URL shown in the terminal (typically `http://localhost:5173`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Scripts
 
-## Expanding the ESLint configuration
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Local development with HMR |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Preview production build |
+| `npm run deploy` | Build and publish to GitHub Pages (`/quotation-builder/`) |
+| `npm run recolor-logo` | Regenerate blue logo assets from `LOGO - Windal.png` (requires `sharp`) |
+| `npm run lint` | ESLint |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Features
+
+- Split UI: quote form (left) and live PDF preview (right)
+- Line items with dimensions, specs, and cropped technical drawings (PNG/JPEG)
+- Excel/CSV import for bulk items
+- Save/load quotes as `.windal` JSON templates
+- Auto-save to browser `localStorage` (large drawings may hit storage limits — export templates as backup)
+- PDF download with quote number as filename
+
+## Template format (`.windal`)
+
+JSON export containing `meta`, `client`, `project`, `items`, and `totals`. Load via **Load** in the header.
+
+## Deployment
+
+The app is configured for GitHub Pages with base path `/quotation-builder/` (see `vite.config.js`). Deploy with:
+
+```bash
+npm run deploy
+```
+
+## Brand assets
+
+Place logos and award images under `src/assets/`. To regenerate PDF-friendly blue logos from the orange master:
+
+```bash
+npm run recolor-logo
+```
+
+Output: `src/assets/brand_assets/LOGO_Blue.png` and `LOGO_Blue.jpg`.
+
+## Project layout
+
+```
+src/
+  App.jsx                    # Shell, import/export, PDF viewer
+  store/quoteStore.js        # Zustand state + persistence
+  components/
+    QuotationPDFDocument.jsx # PDF layout
+    form/                    # Form sections
+  utils/calculateTotals.js   # Shared pricing math
+  constants/upi.js           # UPI payment URI (matches bank account on quote)
+```

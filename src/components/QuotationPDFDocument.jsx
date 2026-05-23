@@ -1,5 +1,8 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { calculateTotals, formatInr, getEffectiveRate, getItemLineAmount } from '../utils/calculateTotals';
+import { chunkItemsForPdf } from '../utils/chunkPdfItems';
+import { company } from '../config/company';
 
 import award1 from '../assets/awards/IIID_Best_Stall_Design_Award_2023.jpeg';
 import award2 from '../assets/awards/IDEA_24_Trophy.jpeg';
@@ -262,6 +265,19 @@ const styles = StyleSheet.create({
     fontSize: 7,
     color: NAVY_MID
   },
+  itemDrawing: {
+    maxHeight: 72,
+    maxWidth: '100%',
+    marginTop: 5,
+    objectFit: 'contain',
+    alignSelf: 'flex-start'
+  },
+  continuationNote: {
+    fontSize: 7,
+    color: TEXT_SOFT,
+    marginBottom: 8,
+    fontStyle: 'italic'
+  },
   
   // --- Totals & Bank ---
   totalsSection: {
@@ -309,6 +325,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 4
   },
+  grandTotalText: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 9,
+    color: '#ffffff'
+  },
+  grandTotalValue: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 11,
+    color: '#ffffff'
+  },
   
   // --- Terms ---
   tcGrid: {
@@ -327,7 +353,6 @@ const styles = StyleSheet.create({
     marginBottom: 6
   },
   tcNum: {
-    fontFamily: 'Times-Roman',
     fontSize: 12,
     fontFamily: 'Helvetica-Bold',
     color: NAVY,
@@ -376,19 +401,203 @@ const styles = StyleSheet.create({
   }
 });
 
+const FOOTER_TEXT = company.footerLine;
+
+const PdfFooter = () => (
+  <View style={styles.footer} fixed>
+    <Text>{FOOTER_TEXT}</Text>
+    <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+  </View>
+);
+
+const PricingPageHeader = ({ meta, client, project, logoUrl, continuation }) => (
+  <>
+    <View style={styles.headerCompact} fixed>
+      {logoUrl && <Image src={logoUrl} style={styles.logoCompact} />}
+      <Text style={{ fontSize: 7, color: NAVY_MID }}>
+        <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY }}>{meta.quoteNo}</Text>
+        {'  ·  '}
+        {client.name}
+        {'  ·  '}
+        {project.name}
+        {continuation ? '  ·  (continued)' : ''}
+      </Text>
+    </View>
+    {!continuation && (
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionNum}>2</Text>
+        <Text style={styles.sectionTitle}>Scope of Supply & Pricing</Text>
+        <View style={styles.sectionLine} />
+      </View>
+    )}
+    {continuation && (
+      <Text style={styles.continuationNote}>Scope of Supply & Pricing (continued)</Text>
+    )}
+  </>
+);
+
+const ItemsTableHeader = () => (
+  <View style={[styles.tableRow, styles.tableHeaderRow]} fixed>
+    <View style={[styles.tableCol, { width: '25%' }]}><Text style={styles.tableHeaderCell}>Code & Drawing</Text></View>
+    <View style={[styles.tableCol, { width: '37%' }]}><Text style={styles.tableHeaderCell}>System Specification</Text></View>
+    <View style={[styles.tableCol, { width: '8%', textAlign: 'center' }]}><Text style={styles.tableHeaderCell}>Qty</Text></View>
+    <View style={[styles.tableCol, { width: '15%', textAlign: 'right' }]}><Text style={styles.tableHeaderCell}>Rate / Unit</Text></View>
+    <View style={[styles.tableCol, { width: '15%', textAlign: 'right' }]}><Text style={styles.tableHeaderCell}>Amount (₹)</Text></View>
+  </View>
+);
+
+const ItemTableRow = ({ item, formatAmount, markupMultiplier }) => {
+  const effectiveRate = getEffectiveRate(item.rate, markupMultiplier);
+  const itemAmount = getItemLineAmount(item, markupMultiplier);
+  const hasImage = item.imageBlob && !String(item.imageBlob).startsWith('data:application/pdf');
+
+  return (
+    <View style={styles.tableRow} wrap={false}>
+      <View style={[styles.tableCol, { width: '25%' }]}>
+        <Text style={styles.itemCode}>{item.code}</Text>
+        {hasImage && <Image src={item.imageBlob} style={styles.itemDrawing} />}
+      </View>
+      <View style={[styles.tableCol, { width: '37%' }]}>
+        <Text style={styles.itemSystem}>{item.system}</Text>
+        <Text style={[styles.tableCell, { color: TEXT_SOFT, marginBottom: 6 }]}>{item.type}</Text>
+        {item.dimension && <View style={styles.specRow}><Text style={styles.specLabel}>Dim</Text><Text style={styles.specValue}>{item.dimension}</Text></View>}
+        {item.area && <View style={styles.specRow}><Text style={styles.specLabel}>Area</Text><Text style={styles.specValue}>{item.area} sq.ft</Text></View>}
+        {item.location && <View style={styles.specRow}><Text style={styles.specLabel}>Location</Text><Text style={styles.specValue}>{item.location}</Text></View>}
+        {item.glazing && <View style={styles.specRow}><Text style={styles.specLabel}>Glazing</Text><Text style={styles.specValue}>{item.glazing}</Text></View>}
+        {item.profile && <View style={styles.specRow}><Text style={styles.specLabel}>Profile</Text><Text style={styles.specValue}>{item.profile}</Text></View>}
+        {item.hardware && <View style={styles.specRow}><Text style={styles.specLabel}>Hardware</Text><Text style={styles.specValue}>{item.hardware}</Text></View>}
+        {item.track && <View style={styles.specRow}><Text style={styles.specLabel}>Track</Text><Text style={styles.specValue}>{item.track}</Text></View>}
+      </View>
+      <View style={[styles.tableCol, { width: '8%', justifyContent: 'center' }]}>
+        <Text style={[styles.tableCell, { textAlign: 'center' }]}>{item.qty}</Text>
+      </View>
+      <View style={[styles.tableCol, { width: '15%', justifyContent: 'center' }]}>
+        <Text style={{ fontSize: 6, color: TEXT_SOFT, textAlign: 'right', marginBottom: 2 }}>₹ PER SQ.FT</Text>
+        <Text style={[styles.tableCell, { textAlign: 'right', fontFamily: 'Helvetica-Bold', fontSize: 10, color: NAVY }]}>{formatAmount(effectiveRate)}</Text>
+      </View>
+      <View style={[styles.tableCol, { width: '15%', justifyContent: 'center' }]}>
+        <Text style={[styles.tableCell, { textAlign: 'right', fontFamily: 'Times-Roman', fontSize: 11, color: NAVY }]}>{formatAmount(itemAmount)}</Text>
+      </View>
+    </View>
+  );
+};
+
+const PricingTotalsSection = ({
+  formatAmount,
+  subtotal,
+  discountType,
+  discountAmount,
+  totals,
+  finalSubtotal,
+  applyGst,
+  gstType,
+  cgst,
+  sgst,
+  igst,
+  grandTotal,
+  qrCodeUrl,
+}) => (
+  <View style={styles.totalsSection} wrap={false}>
+    <View style={styles.bankBox}>
+      <Text style={styles.bankHeader}>Bank Details</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Account Name</Text>
+                  <Text style={styles.bankValue}>{company.bank.accountName}</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Account No.</Text>
+                  <Text style={styles.bankValue}>{company.bank.accountNo}</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>Bank</Text>
+                  <Text style={styles.bankValue}>{company.bank.bankName}</Text>
+                </View>
+                <View style={styles.bankRow}>
+                  <Text style={styles.bankLabel}>IFSC Code</Text>
+                  <Text style={styles.bankValue}>{company.bank.ifsc}</Text>
+                </View>
+                <Text style={{ marginTop: 10, fontSize: 8 }}>
+                  <Text style={{ color: BLUE, fontFamily: 'Helvetica-Bold' }}>GSTIN  </Text>
+                  <Text style={{ fontFamily: 'Helvetica-Bold' }}>{company.gstin}</Text>
+                </Text>
+        </View>
+        {qrCodeUrl && (
+          <View style={{ marginLeft: 15, justifyContent: 'center', alignItems: 'center' }}>
+            <Image src={qrCodeUrl} style={{ width: 55, height: 55 }} />
+            <Text style={{ fontSize: 5, color: TEXT_SOFT, marginTop: 4 }}>SCAN TO PAY</Text>
+          </View>
+        )}
+      </View>
+    </View>
+
+    <View style={styles.totalsBox}>
+      <View style={styles.totalRow}>
+        <Text style={styles.tableCell}>Basic Value</Text>
+        <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(subtotal)}</Text>
+      </View>
+      {discountAmount > 0 && (
+        <View style={styles.totalRow}>
+          <Text style={styles.tableCell}>Discount {discountType === '%' ? `(@ ${totals.discount}%)` : ''}</Text>
+          <Text style={[styles.tableCell, { color: '#ef4444', fontFamily: 'Helvetica-Bold' }]}>- {formatAmount(discountAmount)}</Text>
+        </View>
+      )}
+      <View style={styles.totalRow}>
+        <Text style={styles.tableCell}>Logistics</Text>
+        <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(totals.logistics)}</Text>
+      </View>
+      <View style={styles.totalRow}>
+        <Text style={styles.tableCell}>Installation</Text>
+        <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(totals.installation)}</Text>
+      </View>
+      <View style={[styles.totalRow, { borderTop: `2px solid ${RULE}`, marginTop: 2, paddingTop: 6 }]}>
+        <Text style={styles.tableCell}>{applyGst ? 'Subtotal (excl. GST)' : 'Total (GST not applied)'}</Text>
+        <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold', color: NAVY }]}>{formatAmount(finalSubtotal)}</Text>
+      </View>
+      {applyGst && gstType === 'cgst_sgst' && (
+        <>
+          <View style={styles.totalRow}>
+            <Text style={styles.tableCell}>CGST @ 9%</Text>
+            <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(cgst)}</Text>
+          </View>
+          <View style={styles.totalRow}>
+            <Text style={styles.tableCell}>SGST @ 9%</Text>
+            <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(sgst)}</Text>
+          </View>
+        </>
+      )}
+      {applyGst && gstType === 'igst' && (
+        <View style={styles.totalRow}>
+          <Text style={styles.tableCell}>IGST @ 18%</Text>
+          <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold' }]}>{formatAmount(igst)}</Text>
+        </View>
+      )}
+      <View style={styles.grandTotalRow}>
+        <Text style={styles.grandTotalText}>Grand Total</Text>
+        <Text style={styles.grandTotalValue}>₹ {formatAmount(grandTotal)}</Text>
+      </View>
+    </View>
+  </View>
+);
+
 const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, qrCodeUrl }) => {
-  const subtotal = items.reduce((acc, item) => acc + (item.qty * item.rate * parseFloat(item.area || 0)), 0);
-  const discountAmount = totals.discountType === '%' 
-    ? (subtotal * (parseFloat(totals.discount) || 0)) / 100 
-    : (parseFloat(totals.discount) || 0);
+  const {
+    subtotal,
+    markupMultiplier,
+    discountType,
+    discountAmount,
+    finalSubtotal,
+    applyGst,
+    gstType,
+    cgst,
+    sgst,
+    igst,
+    grandTotal,
+  } = calculateTotals(items, totals);
 
-  const finalSubtotal = subtotal - discountAmount + totals.logistics + totals.installation;
-  const gst = finalSubtotal * 0.18;
-  const grandTotal = finalSubtotal + gst;
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(amount);
-  };
+  const formatAmount = (amount) => formatInr(amount, { currency: false });
+  const itemPages = chunkItemsForPdf(items);
 
   return (
     <Document>
@@ -397,14 +606,14 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, q
         <View style={styles.header}>
           <View>
             {logoUrl && <Image src={logoUrl} style={styles.logo} />}
-            <Text style={styles.tagline}>Premium Architectural Glass & Aluminium Systems</Text>
+            <Text style={styles.tagline}>{company.tagline}</Text>
           </View>
           <View style={styles.contactInfo}>
-            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Wadhwa Enterprises</Text>
-            <Text>11, Gumti Gurudwara Building, GT Road</Text>
-            <Text>Kanpur — 208012, Uttar Pradesh</Text>
-            <Text>+91 98390 36334  ·  samir.w@windal.in</Text>
-            <Text style={{ color: BLUE, fontSize: 6, marginTop: 4 }}>GSTIN: 09AABPW2030P1ZD</Text>
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>{company.legalName}</Text>
+            <Text>{company.address.line1}</Text>
+            <Text>{company.address.line2}</Text>
+            <Text>{company.phone}  ·  {company.email}</Text>
+            <Text style={{ color: BLUE, fontSize: 6, marginTop: 4 }}>GSTIN: {company.gstin}</Text>
           </View>
         </View>
 
@@ -442,16 +651,16 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, q
         </View>
 
         <View style={styles.introText}>
-          <Text style={{ marginBottom: 10 }}>Dear {client.name},</Text>
-          <Text style={{ marginBottom: 10 }}>Thank you for considering Windal Systems for your project. It is a privilege to present this quotation, and we look forward to being a trusted part of your space from start to finish.</Text>
-          <Text style={{ marginBottom: 10 }}>Every system we supply is custom-fabricated to your exact openings using <Text style={{fontFamily: 'Helvetica-Bold'}}>AluK aluminium profiles</Text>, a globally certified European brand used in landmark residential and commercial projects across India. Our systems are built and tested for thermal comfort, sound control, wind resistance, and long-term structural strength.</Text>
-          <Text style={{ marginBottom: 15 }}>We are confident the solution below will enhance both the beauty and functionality of your space for decades to come. Our team is available at every step — from survey to installation and beyond.</Text>
-          
-          <Text style={{ fontStyle: 'italic', color: TEXT_SOFT, marginBottom: 15 }}>We value this opportunity and look forward to a long-standing association with you.</Text>
-          
+          <Text style={{ marginBottom: 10 }}>{company.introLetter.greeting(client.name)}</Text>
+          {company.introLetter.paragraphs.map((para, i) => (
+            <Text key={i} style={{ marginBottom: 10 }}>{para}</Text>
+          ))}
+          <Text style={{ fontStyle: 'italic', color: TEXT_SOFT, marginBottom: 15 }}>
+            {company.introLetter.closingLine}
+          </Text>
           <Text>Warm regards,</Text>
-          <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY, marginTop: 2 }}>Samir Wadhwa</Text>
-          <Text style={{ fontSize: 7, color: TEXT_SOFT }}>Director, Wadhwa Enterprises</Text>
+          <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY, marginTop: 2 }}>{company.signatory.name}</Text>
+          <Text style={{ fontSize: 7, color: TEXT_SOFT }}>{company.signatory.title}</Text>
         </View>
 
         <View style={styles.awardsStrip}>
@@ -485,155 +694,71 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, q
           </View>
         </View>
 
-        <View style={styles.footer} fixed>
-          <Text>windal.in  ·  samir.w@windal.in  ·  +91 98390 36334</Text>
-          <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
-        </View>
+        <PdfFooter />
       </Page>
 
-      {/* ════ PAGE 2: ITEMS & PRICING ════ */}
+      {/* ════ PRICING: ITEM PAGES (paginated) ════ */}
+      {itemPages.map((pageItems, pageIndex) => (
+        <Page key={`items-${pageIndex}`} size="A4" style={styles.page}>
+          <PricingPageHeader
+            meta={meta}
+            client={client}
+            project={project}
+            logoUrl={logoUrl}
+            continuation={pageIndex > 0}
+          />
+          <View style={styles.table}>
+            <ItemsTableHeader />
+            {pageItems.map((item) => (
+              <ItemTableRow
+                key={item.id}
+                item={item}
+                formatAmount={formatAmount}
+                markupMultiplier={markupMultiplier}
+              />
+            ))}
+          </View>
+          <PdfFooter />
+        </Page>
+      ))}
+
+      {/* ════ PRICING: TOTALS & BANK ════ */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerCompact} fixed>
           {logoUrl && <Image src={logoUrl} style={styles.logoCompact} />}
           <Text style={{ fontSize: 7, color: NAVY_MID }}>
-            <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY }}>{meta.quoteNo}</Text>  ·  {client.name}  ·  {project.name}
+            <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY }}>{meta.quoteNo}</Text>
+            {'  ·  '}
+            {client.name}
+            {'  ·  '}
+            Summary
           </Text>
         </View>
 
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionNum}>2</Text>
-          <Text style={styles.sectionTitle}>Scope of Supply & Pricing</Text>
-          <View style={styles.sectionLine}></View>
-        </View>
+        <Text style={{ fontSize: 7, color: TEXT_SOFT, marginTop: 12, marginBottom: 16 }}>
+          * {company.pricingFootnote}
+        </Text>
 
-        <View style={styles.table}>
-          {/* Table Header */}
-          <View style={[styles.tableRow, styles.tableHeaderRow]} fixed>
-            <View style={[styles.tableCol, { width: '25%' }]}><Text style={styles.tableHeaderCell}>Code & Drawing</Text></View>
-            <View style={[styles.tableCol, { width: '37%' }]}><Text style={styles.tableHeaderCell}>System Specification</Text></View>
-            <View style={[styles.tableCol, { width: '8%', textAlign: 'center' }]}><Text style={styles.tableHeaderCell}>Qty</Text></View>
-            <View style={[styles.tableCol, { width: '15%', textAlign: 'right' }]}><Text style={styles.tableHeaderCell}>Rate / Unit</Text></View>
-            <View style={[styles.tableCol, { width: '15%', textAlign: 'right' }]}><Text style={styles.tableHeaderCell}>Amount (₹)</Text></View>
-          </View>
+        <PricingTotalsSection
+          formatAmount={formatAmount}
+          subtotal={subtotal}
+          discountType={discountType}
+          discountAmount={discountAmount}
+          totals={totals}
+          finalSubtotal={finalSubtotal}
+          applyGst={applyGst}
+          gstType={gstType}
+          cgst={cgst}
+          sgst={sgst}
+          igst={igst}
+          grandTotal={grandTotal}
+          qrCodeUrl={qrCodeUrl}
+        />
 
-          {/* Table Rows */}
-          {items.map((item, idx) => {
-            const itemAmount = item.qty * item.rate * parseFloat(item.area || 0);
-            return (
-              <View style={styles.tableRow} key={idx} wrap={false}>
-                <View style={[styles.tableCol, { width: '25%' }]}>
-                  <Text style={styles.itemCode}>{item.code}</Text>
-                  {item.imageBlob && !item.imageBlob.startsWith('data:application/pdf') && (
-                    <Image src={item.imageBlob} style={{ width: '100%', marginTop: 5, borderRadius: 2 }} />
-                  )}
-                </View>
-                <View style={[styles.tableCol, { width: '37%' }]}>
-                  <Text style={styles.itemSystem}>{item.system}</Text>
-                  <Text style={[styles.tableCell, { color: TEXT_SOFT, marginBottom: 6 }]}>{item.type}</Text>
-                  
-                  {item.dimension && <View style={styles.specRow}><Text style={styles.specLabel}>Dim</Text><Text style={styles.specValue}>{item.dimension}</Text></View>}
-                  {item.area && <View style={styles.specRow}><Text style={styles.specLabel}>Area</Text><Text style={styles.specValue}>{item.area} sq.ft</Text></View>}
-                  {item.location && <View style={styles.specRow}><Text style={styles.specLabel}>Location</Text><Text style={styles.specValue}>{item.location}</Text></View>}
-                  {item.glazing && <View style={styles.specRow}><Text style={styles.specLabel}>Glazing</Text><Text style={styles.specValue}>{item.glazing}</Text></View>}
-                  {item.profile && <View style={styles.specRow}><Text style={styles.specLabel}>Profile</Text><Text style={styles.specValue}>{item.profile}</Text></View>}
-                  {item.hardware && <View style={styles.specRow}><Text style={styles.specLabel}>Hardware</Text><Text style={styles.specValue}>{item.hardware}</Text></View>}
-                  {item.track && <View style={styles.specRow}><Text style={styles.specLabel}>Track</Text><Text style={styles.specValue}>{item.track}</Text></View>}
-                </View>
-                <View style={[styles.tableCol, { width: '8%', justifyContent: 'center' }]}>
-                  <Text style={[styles.tableCell, { textAlign: 'center' }]}>{item.qty}</Text>
-                </View>
-                <View style={[styles.tableCol, { width: '15%', justifyContent: 'center' }]}>
-                  <Text style={{ fontSize: 6, color: TEXT_SOFT, textAlign: 'right', marginBottom: 2 }}>₹ PER SQ.FT</Text>
-                  <Text style={[styles.tableCell, { textAlign: 'right', fontFamily: 'Helvetica-Bold', fontSize: 10, color: NAVY }]}>{formatCurrency(item.rate)}</Text>
-                </View>
-                <View style={[styles.tableCol, { width: '15%', justifyContent: 'center' }]}>
-                  <Text style={[styles.tableCell, { textAlign: 'right', fontFamily: 'Times-Roman', fontSize: 11, color: NAVY }]}>{formatCurrency(itemAmount)}</Text>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-
-        <Text style={{ fontSize: 7, color: TEXT_SOFT, marginTop: 10 }}>* <Text style={{fontFamily: 'Helvetica-Bold'}}>AluK</Text> — globally certified European aluminium systems brand used across India.</Text>
-
-        <View style={styles.totalsSection} wrap={false}>
-          {/* Bank Details */}
-          <View style={styles.bankBox}>
-            <Text style={styles.bankHeader}>Bank Details</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
-                <View style={styles.bankRow}>
-                  <Text style={styles.bankLabel}>Account Name</Text>
-                  <Text style={styles.bankValue}>WADHWA ENTERPRISES</Text>
-                </View>
-                <View style={styles.bankRow}>
-                  <Text style={styles.bankLabel}>Account No.</Text>
-                  <Text style={styles.bankValue}>09410400008722</Text>
-                </View>
-                <View style={styles.bankRow}>
-                  <Text style={styles.bankLabel}>Bank</Text>
-                  <Text style={styles.bankValue}>Bank of Baroda, Sisamau, Kanpur</Text>
-                </View>
-                <View style={styles.bankRow}>
-                  <Text style={styles.bankLabel}>IFSC Code</Text>
-                  <Text style={styles.bankValue}>BARB0SISAMA</Text>
-                </View>
-                <Text style={{ marginTop: 10, fontSize: 8 }}>
-                  <Text style={{ color: BLUE, fontFamily: 'Helvetica-Bold' }}>GSTIN  </Text>
-                  <Text style={{ fontFamily: 'Helvetica-Bold' }}>09AABPW2030P1ZD</Text>
-                </Text>
-              </View>
-              {qrCodeUrl && (
-                <View style={{ marginLeft: 15, justifyContent: 'center', alignItems: 'center' }}>
-                  <Image src={qrCodeUrl} style={{ width: 55, height: 55 }} />
-                  <Text style={{ fontSize: 5, color: TEXT_SOFT, marginTop: 4 }}>SCAN TO PAY</Text>
-                </View>
-              )}
-            </View>
-          </View>
-
-          {/* Totals */}
-          <View style={styles.totalsBox}>
-            <View style={styles.totalRow}>
-              <Text style={styles.tableCell}>Basic Value</Text>
-              <Text style={[styles.tableCell, {fontFamily: 'Helvetica-Bold'}]}>{formatCurrency(subtotal)}</Text>
-            </View>
-            {discountAmount > 0 && (
-              <View style={styles.totalRow}>
-                <Text style={styles.tableCell}>Discount {totals.discountType === '%' ? `(@ ${totals.discount}%)` : ''}</Text>
-                <Text style={[styles.tableCell, { color: '#ef4444', fontFamily: 'Helvetica-Bold' }]}>- {formatCurrency(discountAmount)}</Text>
-              </View>
-            )}
-            <View style={styles.totalRow}>
-              <Text style={styles.tableCell}>Logistics</Text>
-              <Text style={[styles.tableCell, {fontFamily: 'Helvetica-Bold'}]}>{formatCurrency(totals.logistics)}</Text>
-            </View>
-            <View style={styles.totalRow}>
-              <Text style={styles.tableCell}>Installation</Text>
-              <Text style={[styles.tableCell, {fontFamily: 'Helvetica-Bold'}]}>{formatCurrency(totals.installation)}</Text>
-            </View>
-            <View style={[styles.totalRow, { borderTop: `2px solid ${RULE}`, marginTop: 2, paddingTop: 6 }]}>
-              <Text style={styles.tableCell}>Subtotal (excl. GST)</Text>
-              <Text style={[styles.tableCell, { fontFamily: 'Helvetica-Bold', color: NAVY }]}>{formatCurrency(finalSubtotal)}</Text>
-            </View>
-            <View style={styles.totalRow}>
-              <Text style={styles.tableCell}>GST @ 18%</Text>
-              <Text style={[styles.tableCell, {fontFamily: 'Helvetica-Bold'}]}>{formatCurrency(gst)}</Text>
-            </View>
-            <View style={styles.grandTotalRow}>
-              <Text style={styles.grandTotalText}>Grand Total</Text>
-              <Text style={styles.grandTotalValue}>₹ {formatCurrency(grandTotal)}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.footer} fixed>
-          <Text>windal.in  ·  samir.w@windal.in  ·  +91 98390 36334</Text>
-          <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
-        </View>
+        <PdfFooter />
       </Page>
 
-      {/* ════ PAGE 3: TERMS & CONDITIONS ════ */}
+      {/* ════ TERMS & CONDITIONS ════ */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerCompact} fixed>
           {logoUrl && <Image src={logoUrl} style={styles.logoCompact} />}
@@ -644,73 +769,26 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, q
 
         <View style={{ textAlign: 'center', marginTop: 20, marginBottom: 20 }}>
           <Text style={{ fontFamily: 'Times-Roman', fontSize: 20, color: NAVY, textTransform: 'uppercase', letterSpacing: 3 }}>Terms & Conditions</Text>
-          <Text style={{ fontSize: 8, color: TEXT_SOFT, marginTop: 6 }}>Please read all terms carefully. Signing or emailing approval of this document constitutes full acceptance.</Text>
+          <Text style={{ fontSize: 8, color: TEXT_SOFT, marginTop: 6 }}>{company.termsIntro}</Text>
         </View>
 
         <View style={styles.tcGrid}>
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>01</Text>
-              <Text style={styles.tcTitle}>PRODUCT & SPECIFICATIONS</Text>
+          {company.termsSections.map((section) => (
+            <View key={section.num} style={styles.tcCard}>
+              <View style={styles.tcHeader}>
+                <Text style={styles.tcNum}>{section.num}</Text>
+                <Text style={styles.tcTitle}>{section.title}</Text>
+              </View>
+              {section.bullets.map((bullet, i) => (
+                <Text key={i} style={styles.tcText}>• {bullet}</Text>
+              ))}
             </View>
-            <Text style={styles.tcText}>• All specifications, colours, and hardware are final upon sign-off. Minor visual variations from showroom samples may occur due to scale.</Text>
-            <Text style={styles.tcText}>• Systems are custom-manufactured; no two units are identical.</Text>
-            <Text style={styles.tcText}>• Signed document or email approval constitutes a binding contract.</Text>
-          </View>
-          
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>02</Text>
-              <Text style={styles.tcTitle}>ORDER CONFIRMATION & PAYMENT</Text>
-            </View>
-            <Text style={styles.tcText}>• Quotation valid for 15 days from date of issue.</Text>
-            <Text style={styles.tcText}>• Orders confirmed only on receipt of advance. No cancellations or refunds post-confirmation.</Text>
-            <Text style={styles.tcText}>• Schedule: 50% Advance · 40% Before Dispatch · 10% Post Installation.</Text>
-            <Text style={styles.tcText}>• Site must be ready within 3 months of order, else subject to price revision.</Text>
-          </View>
-
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>03</Text>
-              <Text style={styles.tcTitle}>SITE READINESS (CUSTOMER SCOPE)</Text>
-            </View>
-            <Text style={styles.tcText}>• Civil structure with plaster / POP complete. Jambs, soffits, and sills must be smooth, level, and finished.</Text>
-            <Text style={styles.tcText}>• Scaffolding, electricity, and water to be provided by the customer at site.</Text>
-            <Text style={styles.tcText}>• Aperture tapering or unevenness must be corrected prior to installation.</Text>
-          </View>
-
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>04</Text>
-              <Text style={styles.tcTitle}>SURVEY & TECHNICAL REVIEW</Text>
-            </View>
-            <Text style={styles.tcText}>• Survey is scheduled only after site readiness confirmation and advance receipt.</Text>
-            <Text style={styles.tcText}>• Any post-sign-off specification change (size, colour, glass type) requires a revised quotation and may incur charges.</Text>
-          </View>
-
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>05</Text>
-              <Text style={styles.tcTitle}>PRODUCTION & DISPATCH</Text>
-            </View>
-            <Text style={styles.tcText}>• Production commences after survey sign-off. Lead time: 45 to 60 days for standard finishes.</Text>
-            <Text style={styles.tcText}>• On delivery, material must be stored upright in a dry, protected area. Customer's responsibility.</Text>
-          </View>
-
-          <View style={styles.tcCard}>
-            <View style={styles.tcHeader}>
-              <Text style={styles.tcNum}>06</Text>
-              <Text style={styles.tcTitle}>INSTALLATION & WARRANTY</Text>
-            </View>
-            <Text style={styles.tcText}>• Installation scheduled once major civil and interior work is complete.</Text>
-            <Text style={styles.tcText}>• Protection tape must be removed within 30 days of installation.</Text>
-            <Text style={styles.tcText}>• Warranty on hardware and profile integrity is valid only upon quality check, signed handover, and 100% payment clearance.</Text>
-          </View>
+          ))}
         </View>
 
         <View style={styles.sigRow} wrap={false}>
           <View style={styles.sigBox}>
-            <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY }}>Wadhwa Enterprises</Text>
+            <Text style={{ fontFamily: 'Helvetica-Bold', color: NAVY }}>{company.legalName}</Text>
             <View style={styles.sigLine}></View>
             <Text style={{ fontSize: 7, color: TEXT_SOFT }}>Authorised Signatory  ·  Date: ___________</Text>
           </View>
@@ -721,10 +799,7 @@ const QuotationPDFDocument = ({ meta, client, project, items, totals, logoUrl, q
           </View>
         </View>
 
-        <View style={styles.footer} fixed>
-          <Text>windal.in  ·  samir.w@windal.in  ·  +91 98390 36334</Text>
-          <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
-        </View>
+        <PdfFooter />
       </Page>
     </Document>
   );
